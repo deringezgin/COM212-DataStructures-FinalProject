@@ -1,3 +1,6 @@
+import managers.MovieManager;
+import managers.SaveLoadManager;
+import structures.*;
 import java.io.Serializable;
 import java.util.Scanner;
 
@@ -53,7 +56,7 @@ public class TestTerminal implements Serializable {
                             case 3: {
                                 System.out.println("Accessing a movie by ID");
                                 System.out.print("Please enter the movie ID --> ");
-                                int enteredMovieID = getIntegerInput(1000, 9999);
+                                int enteredMovieID = getIntegerInput(10000, 99999);
                                 Movie foundMovie = moviesByID.searchMovieByID(enteredMovieID);
                                 if (foundMovie == null) {
                                     System.out.println("Movie not found!");
@@ -255,7 +258,7 @@ public class TestTerminal implements Serializable {
         System.out.print("Please enter the release date of the movie --> ");
         int releaseDate = getIntegerInput(10000000, 99999999);
         System.out.print("Please enter the ID of the movie --> ");
-        int id = getIntegerInput(1000, 9999);
+        int id = getIntegerInput(10000, 99999);
         System.out.print("Please enter the rating of the movie --> ");
         int rating = getIntegerInput(0, 100);
         System.out.print("Please set the availability (1 for available, 0 for not available) --> ");
