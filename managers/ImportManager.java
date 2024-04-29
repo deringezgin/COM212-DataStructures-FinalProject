@@ -8,21 +8,15 @@ import java.util.Scanner;
 
 public class ImportManager {
     private MovieManager movieManager;
+    private CustomerStorage customers;
 
-
-    public static void main(String[] args) {
-        SaveLoadManager saveLoadManager = new SaveLoadManager();
-        MovieScoresHeap movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
-        MoviesByID moviesByID = saveLoadManager.loadMoviesByID();
-        MoviesByDate moviesByDate = saveLoadManager.loadMoviesByDate();
-        MovieManager movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
-        importMoviesFromCSV(movieManager);
-        importCustomersFromCSV();
+    public ImportManager(MovieManager movieManager, CustomerStorage customers) {
+        this.movieManager = movieManager;
+        this.customers = customers;
     }
-
-    public static void importMoviesFromCSV(MovieManager movieManager) {
+    public void importMoviesFromCSV() {
         try {
-            Scanner input = new Scanner(new File("seed/movieSeedCSV.csv"));
+            Scanner input = new Scanner(new File("seed/movieSeedCSVSimple.csv"));
             input.useDelimiter(",|\\R"); // Delimiter pattern for commas or line breaks
 
             while (input.hasNext()) {
@@ -32,6 +26,7 @@ public class ImportManager {
                 int score = Integer.parseInt(input.next().trim());
                 boolean availability = Integer.parseInt(input.next().trim()) == 1;
                 Movie movie = new Movie(title, releaseDate, id, score, availability);
+                movieManager.insert(movie);
             }
             input.close();
         } catch (FileNotFoundException e) {
@@ -42,7 +37,7 @@ public class ImportManager {
         }
     }
 
-    public static void importCustomersFromCSV() {
+    public void importCustomersFromCSV() {
         try {
             Scanner input = new Scanner(new File("seed/customerSeedCSV.csv"));
             input.useDelimiter(",|\\R"); // Delimiter pattern for commas or line breaks
@@ -51,8 +46,8 @@ public class ImportManager {
                 String name = input.next().trim();
                 String email = input.next().trim();
                 int credit = Integer.parseInt(input.next().trim());
-                Customer customer = new Customer(name, email, credit);
-                System.out.println(customer);
+                Customer newCustomer = new Customer(name, email, credit);
+                customers.insertCustomer(newCustomer);
             }
             input.close();
         } catch (FileNotFoundException e) {
@@ -63,4 +58,8 @@ public class ImportManager {
         }
     }
 
+    public void importAllData() {
+        importMoviesFromCSV();
+        importCustomersFromCSV();
+    }
 }

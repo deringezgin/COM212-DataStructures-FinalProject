@@ -1,6 +1,6 @@
 /*
 A movie scores heap that keeps track of the lowest scored movie
- */
+*/
 
 package structures;
 

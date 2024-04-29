@@ -2,6 +2,7 @@
 Wishlist to keep track of the last 20 movies that the user watched.
 We used a queue to implement this functionality
 */
+
 package structures;
 
 import java.io.Serializable;
@@ -42,8 +43,6 @@ public class Wishlist implements Serializable {
 
     public void addMovie(Movie movie) {
         // Function to add a movie to the wishlist
-//        if(filmCount == size) {
-//        }
         wishList[(firstMovieIndex + filmCount) % size] = movie;
         filmCount += 1;
     }

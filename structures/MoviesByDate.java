@@ -1,7 +1,6 @@
 /*
 A BST that organizes the movies by the release date.
- */
-
+*/
 
 package structures;
 
@@ -33,7 +32,7 @@ public class MoviesByDate implements Serializable {
             }
         } else {
             if (parent.getRightDateMovie() == null) {
-                parent.setRightIDMovie(target);
+                parent.setRightDateMovie(target);
             } else {
                 inserter(parent.getRightDateMovie(), target);
             }

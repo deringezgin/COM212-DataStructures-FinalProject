@@ -1,6 +1,10 @@
-import managers.MovieManager;
-import managers.SaveLoadManager;
+/*
+Simple Test Terminal
+ */
+
+import managers.*;
 import structures.*;
+
 import java.io.Serializable;
 import java.util.Scanner;
 
@@ -49,7 +53,7 @@ public class TestTerminal implements Serializable {
                             }
                             case 2: {
                                 System.out.println("Printing all of the movies by the release date...");
-                                moviesByDate.printAscendingDate();
+                                moviesByDate.printTree();
                                 System.out.println("Returning to the main menu...");
                                 break;
                             }
@@ -97,7 +101,7 @@ public class TestTerminal implements Serializable {
                                 if (adminCustomer != null) {
                                     System.out.println("Customer found!");
                                     System.out.println(adminCustomer);
-                                    System.out.println("Would you like to modify the customer? 1 for YES, 0 for NO");
+                                    System.out.println("Would you like to modify the customer? 1 for YES, 0 for NO --> ");
                                     int modifyChoice = getIntegerInput(0, 1);
                                     if (modifyChoice == 0) {
                                         break;
@@ -133,6 +137,10 @@ public class TestTerminal implements Serializable {
                                 System.out.println("Creating a new movie");
                                 createMovie(movieManager);
                                 break;
+                            }
+                            case 4: {
+                                System.out.println("Returning to the seed of the program...");
+                                returnToSeed(saveLoadManager, movieManager, customers);
                             }
                         }
                     }
@@ -178,8 +186,9 @@ public class TestTerminal implements Serializable {
         System.out.println("1. Access and Change Customer Information");
         System.out.println("2. See the Least Rated Movie");
         System.out.println("3. Add a new Movie");
+        System.out.println("4. Return to the initial seed of the program");
         System.out.print("Please select an option --> ");
-        return getIntegerInput(1, 3);
+        return getIntegerInput(1, 4);
     }
 
     public static int customerMenu() {
@@ -312,5 +321,11 @@ public class TestTerminal implements Serializable {
             }
         }
         return email;
+    }
+
+    public static void returnToSeed(SaveLoadManager saveLoadManager, MovieManager movieManager, CustomerStorage customers) {
+        saveLoadManager.clearAllData();
+        ImportManager importManager = new ImportManager(movieManager, customers);
+        importManager.importAllData();
     }
 }

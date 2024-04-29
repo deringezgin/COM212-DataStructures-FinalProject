@@ -3,9 +3,11 @@ A save-load manager class to store the methods that handles the serialization of
 We need these function to save our data to files and read the data from the files.
 We created a separate file for these functions in order to be organized
  */
+
 package managers;
 
 import structures.*;
+
 import java.io.*;
 
 public class SaveLoadManager implements Serializable {
@@ -33,6 +35,8 @@ public class SaveLoadManager implements Serializable {
             customers = (CustomerStorage) in.readObject();
         } catch (FileNotFoundException e) {
             System.out.println("data/customer.ser file is not found");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
         } catch (EOFException e) {
             System.out.println("data/customer.ser is Empty");
         } catch (Exception e) {
@@ -67,6 +71,8 @@ public class SaveLoadManager implements Serializable {
             System.out.println("data/wishlist.ser file is not found");
         } catch (EOFException e) {
             System.out.println("data/wishlist.ser is Empty");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,6 +103,8 @@ public class SaveLoadManager implements Serializable {
             movieScoresHeap = (MovieScoresHeap) in.readObject();
         } catch (FileNotFoundException e) {
             System.out.println("data/movieScoresHeap.ser file is not found");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
         } catch (EOFException e) {
             System.out.println("data/movieScoresHeap.ser is Empty");
         } catch (Exception e) {
@@ -129,6 +137,8 @@ public class SaveLoadManager implements Serializable {
             moviesByID = (MoviesByID) in.readObject();
         } catch (FileNotFoundException e) {
             System.out.println("data/moviesByID.ser file is not found");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
         } catch (EOFException e) {
             System.out.println("data/moviesByID.ser is Empty");
         } catch (Exception e) {
@@ -161,6 +171,8 @@ public class SaveLoadManager implements Serializable {
             moviesByDate = (MoviesByDate) in.readObject();
         } catch (FileNotFoundException e) {
             System.out.println("data/moviesByDate.ser file is not found");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
         } catch (EOFException e) {
             System.out.println("data/moviesByDate.ser is Empty");
         } catch (Exception e) {
@@ -177,5 +189,17 @@ public class SaveLoadManager implements Serializable {
         saveMoviesByID(moviesByID);
         saveMoviesByDate(moviesByDate);
         System.out.println("Done");
+    }
+
+    public void clearAllData() {
+        try {
+            new FileWriter("data/customers.ser", false).close();
+            new FileWriter("data/wishlist.ser", false).close();
+            new FileWriter("data/moviesByID.ser", false).close();
+            new FileWriter("data/moviesByDate.ser", false).close();
+            new FileWriter("data/movieScoresHeap.ser", false).close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
