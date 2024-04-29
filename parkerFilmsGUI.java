@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
-public class CustomWindow {
+public class parkerFilmsGUI {
     private static final Font titleFont = new Font("Verdana", Font.BOLD, 40);
     private static final Font textFont = new Font("Verdana", Font.PLAIN, 20);
 
