@@ -15,6 +15,7 @@ public class MoviesByID implements Serializable {
 
     public void insertMovieByID(Movie movie) {
         // Inserting a Movie to the ID BST
+        System.out.println("Inserting movie: " + movie.getTitle());
         if (root == null) {
             root = movie;
         } else {

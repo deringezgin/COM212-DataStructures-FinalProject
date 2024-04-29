@@ -16,7 +16,7 @@ public class ImportManager {
     }
     public void importMoviesFromCSV() {
         try {
-            Scanner input = new Scanner(new File("seed/movieSeedCSVSimple.csv"));
+            Scanner input = new Scanner(new File("seed/movieSeedCSV.csv"));
             input.useDelimiter(",|\\R"); // Delimiter pattern for commas or line breaks
 
             while (input.hasNext()) {
@@ -44,6 +44,7 @@ public class ImportManager {
 
             while (input.hasNext()) {
                 String name = input.next().trim();
+                System.out.println(name);
                 String email = input.next().trim();
                 int credit = Integer.parseInt(input.next().trim());
                 Customer newCustomer = new Customer(name, email, credit);

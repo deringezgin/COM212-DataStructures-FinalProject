@@ -57,6 +57,7 @@ public class CustomerStorage implements Serializable {
         if (lookUpCustomer(newCustomer.getCredit()) != null) {
             return;
         }
+        System.out.println("Inserting customer: " + newCustomer.getName());
         Customer temp = customers[hash(newCustomer.getCredit())];
         if (temp == null) {
             customers[hash(newCustomer.getCredit())] = newCustomer;
