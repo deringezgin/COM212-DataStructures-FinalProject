@@ -13,6 +13,7 @@ public class Customer implements Serializable {
     private String name;
     private String email;
     private int credit;
+    private String password;
     private Wishlist wishlist;
     private HaveWatched haveWatched;
     private Customer nextCustomer;
@@ -23,6 +24,16 @@ public class Customer implements Serializable {
         this.email = email;
         this.wishlist = new Wishlist();
         this.haveWatched = new HaveWatched();
+        this.password = "password";
+    }
+
+    public Customer(String name, String email, int credit, String password) {
+        this.name = name;
+        this.credit = credit;
+        this.email = email;
+        this.wishlist = new Wishlist();
+        this.haveWatched = new HaveWatched();
+        this.password = password;
     }
 
     // Getter and setter functions for accessing and modifying the instance variables of the Customer object
@@ -64,6 +75,14 @@ public class Customer implements Serializable {
 
     public void setNextCustomer(Customer nextCustomer) {
         this.nextCustomer = nextCustomer;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

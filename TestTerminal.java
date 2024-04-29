@@ -27,6 +27,7 @@ public class TestTerminal implements Serializable {
                 case 1: {
                     //////////////////// CUSTOMER LOGIN \\\\\\\\\\\\\\\\\\\\
                     System.out.println("CUSTOMER LOGIN");
+//                    System.out.print("Please enter your email address --> ");
                     System.out.print("Please enter your credit card number --> ");
                     int enteredCreditNumber = getIntegerInput(1000, 9999);
                     Customer currentCustomer = customers.lookUpCustomer(enteredCreditNumber);
@@ -181,21 +182,27 @@ public class TestTerminal implements Serializable {
         }
     }
 
+
     public static boolean adminLogin() {
+        int tries = 3;
+        String username;
+        String password;
         System.out.println("ADMIN LOGIN");
-        System.out.print("Please enter the admin username: ");
-        String username = getStringInput();
-        System.out.print("Please enter the admin password: ");
-        String password = getStringInput();
-        if (username.equals("admin") && password.equals("admin")) {
-            System.out.println("ADMIN LOGIN SUCCESSFUL");
-            return true;
-        } else {
-            System.out.println("Invalid username or password");
-            System.out.println("Returning to the main menu");
-            return false;
-        }
+        do {
+            System.out.print("Please enter the admin username: ");
+            username = getStringInput();
+            System.out.print("Please enter the admin password: ");
+            password = getStringInput();
+            if (username.equals("admin") && password.equals("admin")) {
+                System.out.println("ADMIN LOGIN SUCCESSFUL");
+            } else {
+                System.out.println("Invalid username or password");
+                System.out.println(--tries + " attempts left");
+            }
+        } while ((!(username.equals("admin") && password.equals("admin"))) && (tries != 0));
+        return tries != 0;
     }
+
 
     public static int mainMenu() {
         System.out.println("WELCOME TO THE MOVIE APP");

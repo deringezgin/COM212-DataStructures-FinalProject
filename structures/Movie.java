@@ -110,7 +110,7 @@ public class Movie implements Serializable {
         this.rightDateMovie = rightDateMovie;
     }
 
-    private String convertToDate() {
+    public String convertToDate() {
         int year = this.releaseDate / 10000;
         int monthDay = this.releaseDate % 10000;
         int month = monthDay / 100;

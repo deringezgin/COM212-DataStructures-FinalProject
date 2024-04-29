@@ -44,4 +44,20 @@ public class MovieManager implements Serializable {
         moviesByDate.deleteMovieDate(minRated);
         moviesByID.deleteMovieID(minRated);
     }
+
+    public MoviesByDate getMoviesByDate() {
+        return moviesByDate;
+    }
+
+    public MoviesByID getMoviesByID() {
+        return moviesByID;
+    }
+
+    public MovieScoresHeap getMovieScoresHeap() {
+        return movieScoresHeap;
+    }
+
+    public Movie getLeastRatedMovie() {
+        return movieScoresHeap.findMinScore();
+    }
 }

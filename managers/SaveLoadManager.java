@@ -226,6 +226,12 @@ public class SaveLoadManager implements Serializable {
         System.out.println("Done");
     }
 
+    public void saveMovies(MovieManager movieManager) {
+        saveMoviesByDate(movieManager.getMoviesByDate());
+        saveMoviesByID(movieManager.getMoviesByID());
+        saveMovieScoresHeap(movieManager.getMovieScoresHeap());
+    }
+
     public void clearAllData() {
         try {
             System.out.println("Clearing all data...");

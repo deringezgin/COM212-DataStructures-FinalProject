@@ -163,4 +163,8 @@ public class MoviesByDate implements Serializable {
             printTree2(tree.getRightDateMovie());
         }
     }
+
+    public Movie getRoot() {
+        return root;
+    }
 }

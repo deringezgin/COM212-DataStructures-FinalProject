@@ -25,6 +25,8 @@ public class MovieScoresHeap implements Serializable {
         // Function to delete the lowest scored movie
         if (movieCount == 0) {
             return;
+        } if (movieCount == 1) {
+            moviesByScore[0] = null;
         }
         movieCount -= 1;
         swap(0, movieCount);
