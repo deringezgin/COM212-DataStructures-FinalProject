@@ -140,7 +140,15 @@ public class TestTerminal implements Serializable {
                             }
                             case 4: {
                                 System.out.println("Returning to the seed of the program...");
-                                returnToSeed(saveLoadManager, movieManager, customers);
+                                saveLoadManager.clearAllData();
+                                customers = saveLoadManager.loadCustomers();
+                                wishlist = saveLoadManager.loadWishlist();
+                                movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
+                                moviesByID = saveLoadManager.loadMoviesByID();
+                                moviesByDate = saveLoadManager.loadMoviesByDate();
+                                movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
+                                ImportManager importManager = new ImportManager(movieManager, customers);
+                                importManager.importAllData();
                             }
                         }
                     }
@@ -321,11 +329,5 @@ public class TestTerminal implements Serializable {
             }
         }
         return email;
-    }
-
-    public static void returnToSeed(SaveLoadManager saveLoadManager, MovieManager movieManager, CustomerStorage customers) {
-        saveLoadManager.clearAllData();
-        ImportManager importManager = new ImportManager(movieManager, customers);
-        importManager.importAllData();
     }
 }

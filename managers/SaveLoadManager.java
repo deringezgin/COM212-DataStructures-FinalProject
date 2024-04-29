@@ -2,7 +2,7 @@
 A save-load manager class to store the methods that handles the serialization of our program.
 We need these function to save our data to files and read the data from the files.
 We created a separate file for these functions in order to be organized
- */
+*/
 
 package managers;
 
@@ -193,13 +193,24 @@ public class SaveLoadManager implements Serializable {
 
     public void clearAllData() {
         try {
-            new FileWriter("data/customers.ser", false).close();
-            new FileWriter("data/wishlist.ser", false).close();
-            new FileWriter("data/moviesByID.ser", false).close();
-            new FileWriter("data/moviesByDate.ser", false).close();
-            new FileWriter("data/movieScoresHeap.ser", false).close();
+            System.out.println("Clearing all data...");
+            emptyFile("data/customers.ser");
+            emptyFile("data/wishlist.ser");
+            emptyFile("data/moviesByID.ser");
+            emptyFile("data/moviesByDate.ser");
+            emptyFile("data/movieScoresHeap.ser");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+        System.out.println("All data has been cleared");
+    }
+
+    private void emptyFile(String filePath) throws IOException {
+        File file = new File(filePath);
+        FileWriter fwOb = new FileWriter(file, false);
+        PrintWriter pwOb = new PrintWriter(fwOb, false);
+        pwOb.flush();
+        pwOb.close();
+        fwOb.close();
     }
 }
