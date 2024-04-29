@@ -250,11 +250,10 @@ public class parkerFilmsGUI {
                     JOptionPane.showMessageDialog(panel, "Customer successfully logged in");
                     customerMenu(panel, currentCustomer, customers, saveLoadManager, movieManager);  // Move to the customer menu with the customer object
                 } else {  // If the customer couldn't be validated show a message
-                    JOptionPane.showMessageDialog(panel, """
-                            Customer username / password is wrong.
-                            Your username is the last 4 digits of your credit card.
-                            Your password is 'password' by default or the password you set.
-                            Be sure that you're registered in the system!""");
+                    JOptionPane.showMessageDialog(panel, "Customer username / password is wrong.\n" +
+                            "Your username is the last 4 digits of your credit card.\n" +
+                            "Your password is 'password' by default or the password you set.\n" +
+                            "Be sure that you're registered in the system!");
                 }
             }
         });
@@ -725,13 +724,12 @@ public class parkerFilmsGUI {
                 JOptionPane.showMessageDialog(panel, movieName + " added successfully");  // Print a message to the screen
                 adminMenu(panel, customers, saveLoadManager, movieManager);  // Return to the admin menu
             } else {  // If validation is failed, print a message to the screen and list the rules.
-                JOptionPane.showMessageDialog(panel, """
-                        Invalid Input!
-                        Please be sure that all of the fields are filled.
-                        Release Date is in the valid range of (10000101-99999999)
-                        ID is in the valid range of 10000-99999
-                        Rating is in the valid range of 0-100
-                        And availability is 0 or 1""");
+                JOptionPane.showMessageDialog(panel, "Invalid Input!\n" +
+                        "Please be sure that all of the fields are filled.\n" +
+                        "Release Date is in the valid range of (10000101-99999999)\n" +
+                        "ID is in the valid range of 10000-99999\n" +
+                        "Rating is in the valid range of 0-100\n" +
+                        "And availability is 0 or 1");
             }
         });
 
