@@ -53,7 +53,7 @@ public class TestTerminal implements Serializable {
                             }
                             case 2: {
                                 System.out.println("Printing all of the movies by the release date...");
-                                moviesByDate.printTree();
+                                moviesByDate.printAscendingDate();
                                 System.out.println("Returning to the main menu...");
                                 break;
                             }
@@ -217,7 +217,7 @@ public class TestTerminal implements Serializable {
         System.out.print("Please enter the email address of the customer --> ");
         String email = getEmailInput();
         System.out.print("Please enter the credit card number of the customer --> ");
-        int credit = getIntegerInput(1000, 9999);
+        int credit = getIntegerInput(1, 9999);
         Customer newCustomer = new Customer(name, email, credit);
         customers.insertCustomer(newCustomer);
         System.out.println("Customer created!");
