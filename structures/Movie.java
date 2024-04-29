@@ -137,7 +137,7 @@ public class Movie implements Serializable {
     @Override
     public String toString() {
         // Function to print the movie
-        return "MOVIE DETAILS" +
+        return "\nMOVIE DETAILS" +
                 "\nTitle of the movie: " + this.title +
                 "\nRelease Date: " + convertToDate() +
                 "\nID of the movie: " + this.ID +

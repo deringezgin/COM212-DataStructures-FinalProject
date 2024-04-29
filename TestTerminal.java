@@ -1,6 +1,6 @@
 /*
 Simple Test Terminal
- */
+*/
 
 import managers.*;
 import structures.*;
@@ -21,8 +21,10 @@ public class TestTerminal implements Serializable {
 
         int choice = mainMenu();
         while (choice != 4) {
+            //////////////////// MAIN MENU \\\\\\\\\\\\\\\\\\\\
             switch (choice) {
                 case 1: {
+                    //////////////////// CUSTOMER LOGIN \\\\\\\\\\\\\\\\\\\\
                     System.out.println("CUSTOMER LOGIN");
                     System.out.print("Please enter your credit card number --> ");
                     int enteredCreditNumber = getIntegerInput(1000, 9999);
@@ -31,52 +33,65 @@ public class TestTerminal implements Serializable {
                         System.out.println("Customer found!");
                         System.out.println(currentCustomer);
                         int customerChoice = customerMenu();
-                        switch (customerChoice) {
-                            case 1: {
-                                System.out.println("Accessing the wishlist of the customer...");
-                                Wishlist customerWishlist = currentCustomer.getWishlist();
-                                System.out.println("Accessed the wishlist.");
-                                System.out.println("Pulling up the first movie in the wishlist...");
-                                Movie firstMovie = customerWishlist.getFirstMovie();
-                                if (firstMovie != null) {
-                                    System.out.println("Movie found!");
-                                    System.out.println("Would you like to delete the movie? (1/0)");
-                                    int deleteChoice = getIntegerInput(0, 1);
-                                    if (deleteChoice == 1) {
-                                        customerWishlist.deleteFirstMovie();
-                                        System.out.println("Movie deleted!");
+                        while (customerChoice != 4) {
+                            switch (customerChoice) {
+                                //////////////////// CUSTOMER MENU \\\\\\\\\\\\\\\\\\\\
+                                case 1: {
+                                    System.out.println("Accessing the wishlist of the customer...");
+                                    Wishlist customerWishlist = currentCustomer.getWishlist();
+                                    System.out.println("Accessed the wishlist.");
+                                    System.out.println("Pulling up the first movie in the wishlist...");
+                                    Movie firstMovie = customerWishlist.getFirstMovie();
+                                    if (firstMovie != null) {
+                                        System.out.println("Movie found!");
+                                        System.out.println(firstMovie);
+                                        System.out.print("Would you like to delete the movie? (1/0) --> ");
+                                        int deleteChoice = getIntegerInput(0, 1);
+                                        if (deleteChoice == 1) {
+                                            customerWishlist.deleteFirstMovie();
+                                            System.out.println("Movie deleted!");
+                                        }
+                                    } else {
+                                        System.out.println("No movies found!");
                                     }
-                                } else {
-                                    System.out.println("No movies found!");
+                                    break;
                                 }
-                                break;
-                            }
-                            case 2: {
-                                System.out.println("Printing all of the movies by the release date...");
-                                moviesByDate.printAscendingDate();
-                                System.out.println("Returning to the main menu...");
-                                break;
-                            }
-                            case 3: {
-                                System.out.println("Accessing a movie by ID");
-                                System.out.print("Please enter the movie ID --> ");
-                                int enteredMovieID = getIntegerInput(10000, 99999);
-                                Movie foundMovie = moviesByID.searchMovieByID(enteredMovieID);
-                                if (foundMovie == null) {
-                                    System.out.println("Movie not found!");
-                                } else {
-                                    System.out.println("Movie found!");
-                                    System.out.println(foundMovie);
-                                    System.out.println("Would you like to add this movie to your wishlist? (1/0)");
-                                    int enteredMovieChoice = getIntegerInput(0, 1);
-                                    if (enteredMovieChoice == 1) {
-                                        currentCustomer.getWishlist().addMovie(foundMovie);
-                                        System.out.println("Movie added!");
+                                case 2: {
+                                    System.out.println("Printing all of the movies by the release date...");
+                                    moviesByDate.printAscendingDate();
+                                    System.out.println("Returning to the main menu...");
+                                    break;
+                                }
+                                case 3: {
+                                    System.out.println("Accessing a movie by ID");
+                                    System.out.print("Please enter the movie ID --> ");
+                                    int enteredMovieID = getIntegerInput(10000, 99999);
+                                    Movie foundMovie = moviesByID.searchMovieByID(enteredMovieID);
+                                    if (foundMovie == null) {
+                                        System.out.println("Movie not found!");
+                                    } else {
+                                        System.out.println("Movie found!");
+                                        System.out.println(foundMovie);
+                                        System.out.print("Have you watched this movie? Would you like to add this movie to your watched list (1/0) --> ");
+                                        int addHaveWatchedChoice = getIntegerInput(0, 1);
+                                        if (addHaveWatchedChoice == 1) {
+                                            currentCustomer.getWatchedList().insertMovie(foundMovie);
+                                        } else {
+                                            System.out.print("Would you like to add this movie to your wishlist? (1/0) --> ");
+                                            int addWishlistChoice = getIntegerInput(0, 1);
+                                            if (addWishlistChoice == 1) {
+                                                currentCustomer.getWishlist().addMovie(foundMovie);
+                                                System.out.println("Movie added!");
+                                            }
+                                        }
                                     }
+                                    break;
                                 }
-                                break;
                             }
+                            saveLoadManager.saveAllData(customers, wishlist, movieScoresHeap, moviesByID, moviesByDate);
+                            customerChoice = customerMenu();
                         }
+
                     } else {
                         System.out.println("Customer not found");
                         break;
@@ -84,72 +99,76 @@ public class TestTerminal implements Serializable {
                     break;
                 }
                 case 2: {
-                    ////////// NEW CUSTOMER \\\\\\\\\\
+                    //////////////////// NEW CUSTOMER \\\\\\\\\\\\\\\\\\\\
                     createCustomer(customers);
                     break;
                 }
                 case 3: {
-                    ////////// ADMIN SIDE \\\\\\\\\\
+                    //////////////////// ADMIN SIDE \\\\\\\\\\\\\\\\\\\\
                     if (adminLogin()) {
                         int adminChoice = adminMenu();
-                        switch (adminChoice) {
-                            case 1: {
-                                System.out.println("Access and Manage Customer Information");
-                                System.out.print("Please enter the credit card number of the customer you want to access --> ");
-                                int creditCardNumber = getIntegerInput(1000, 9999);
-                                Customer adminCustomer = customers.lookUpCustomer(creditCardNumber);
-                                if (adminCustomer != null) {
-                                    System.out.println("Customer found!");
-                                    System.out.println(adminCustomer);
-                                    System.out.println("Would you like to modify the customer? 1 for YES, 0 for NO --> ");
-                                    int modifyChoice = getIntegerInput(0, 1);
-                                    if (modifyChoice == 0) {
-                                        break;
+                        while (adminChoice != 5) {
+                            switch (adminChoice) {
+                                case 1: {
+                                    System.out.println("Access and Manage Customer Information");
+                                    System.out.print("Please enter the credit card number of the customer you want to access --> ");
+                                    int creditCardNumber = getIntegerInput(1000, 9999);
+                                    Customer adminCustomer = customers.lookUpCustomer(creditCardNumber);
+                                    if (adminCustomer != null) {
+                                        System.out.println("Customer found!");
+                                        System.out.println(adminCustomer);
+                                        System.out.print("Would you like to modify the customer? 1 for YES, 0 for NO --> ");
+                                        int modifyChoice = getIntegerInput(0, 1);
+                                        if (modifyChoice == 0) {
+                                            break;
+                                        } else {
+                                            modifyCustomer(adminCustomer, customers);
+                                        }
                                     } else {
-                                        modifyCustomer(adminCustomer);
+                                        System.out.println("Customer not found");
                                     }
-                                } else {
-                                    System.out.println("Customer not found");
+                                    break;
                                 }
-                                break;
-                            }
-                            case 2: {
-                                System.out.println("Accessing the least rated movie");
-                                Movie leastRated = movieScoresHeap.findMinScore();
-                                if (leastRated != null) {
-                                    System.out.println("Movie found!");
-                                    System.out.println(leastRated);
-                                    System.out.print("Would you like to remove the movie? 1 for YES, 0 for NO");
-                                    int removeChoice = getIntegerInput(0, 1);
-                                    if (removeChoice == 0) {
-                                        break;
+                                case 2: {
+                                    System.out.println("Accessing the least rated movie");
+                                    Movie leastRated = movieScoresHeap.findMinScore();
+                                    if (leastRated != null) {
+                                        System.out.println("Movie found!");
+                                        System.out.println(leastRated);
+                                        System.out.print("Would you like to remove the movie? 1 for YES, 0 for NO --> ");
+                                        int removeChoice = getIntegerInput(0, 1);
+                                        if (removeChoice == 0) {
+                                            break;
+                                        } else {
+                                            System.out.println("Removing the least rated movie from the system...");
+                                            movieManager.deleteMinScoreMovie();
+                                            System.out.println("Movie Removed!!!");
+                                        }
                                     } else {
-                                        System.out.println("Removing the least rated movie from the system...");
-                                        movieManager.deleteMinScoreMovie();
-                                        System.out.println("Movie Removed!!!");
+                                        System.out.println("Movie not found");
                                     }
-                                } else {
-                                    System.out.println("Movie not found");
+                                    break;
                                 }
-                                break;
+                                case 3: {
+                                    System.out.println("Creating a new movie");
+                                    createMovie(movieManager);
+                                    break;
+                                }
+                                case 4: {
+                                    System.out.println("Returning to the seed of the program...");
+                                    saveLoadManager.clearAllData();
+                                    customers = saveLoadManager.loadCustomers();
+                                    wishlist = saveLoadManager.loadWishlist();
+                                    movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
+                                    moviesByID = saveLoadManager.loadMoviesByID();
+                                    moviesByDate = saveLoadManager.loadMoviesByDate();
+                                    movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
+                                    ImportManager importManager = new ImportManager(movieManager, customers);
+                                    importManager.importAllData();
+                                }
                             }
-                            case 3: {
-                                System.out.println("Creating a new movie");
-                                createMovie(movieManager);
-                                break;
-                            }
-                            case 4: {
-                                System.out.println("Returning to the seed of the program...");
-                                saveLoadManager.clearAllData();
-                                customers = saveLoadManager.loadCustomers();
-                                wishlist = saveLoadManager.loadWishlist();
-                                movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
-                                moviesByID = saveLoadManager.loadMoviesByID();
-                                moviesByDate = saveLoadManager.loadMoviesByDate();
-                                movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
-                                ImportManager importManager = new ImportManager(movieManager, customers);
-                                importManager.importAllData();
-                            }
+                            saveLoadManager.saveAllData(customers, wishlist, movieScoresHeap, moviesByID, moviesByDate);
+                            adminChoice = adminMenu();
                         }
                     }
                     break;
@@ -195,8 +214,9 @@ public class TestTerminal implements Serializable {
         System.out.println("2. See the Least Rated Movie");
         System.out.println("3. Add a new Movie");
         System.out.println("4. Return to the initial seed of the program");
+        System.out.println("5. Return to the main menu");
         System.out.print("Please select an option --> ");
-        return getIntegerInput(1, 4);
+        return getIntegerInput(1, 5);
     }
 
     public static int customerMenu() {
@@ -204,8 +224,9 @@ public class TestTerminal implements Serializable {
         System.out.println("1. Access the Wishlist");
         System.out.println("2. Print all of the movies by release date");
         System.out.println("3. Access a movie by ID");
+        System.out.println("4. Return to the main menu");
         System.out.print("Please select an option --> ");
-        return getIntegerInput(1, 3);
+        return getIntegerInput(1, 4);
     }
 
     public static int customerModifyMenu() {
@@ -231,7 +252,7 @@ public class TestTerminal implements Serializable {
         System.out.println("Customer created!");
     }
 
-    public static void modifyCustomer(Customer adminCustomer) {
+    public static void modifyCustomer(Customer adminCustomer, CustomerStorage customers) {
         // Function to modify the customer
         int choice = customerModifyMenu();
         while (choice != 4) {
@@ -249,10 +270,12 @@ public class TestTerminal implements Serializable {
                     // Modifying the credit card number of the customer
                     System.out.print("Current credit card number of the customer --> " + adminCustomer.getCredit());
                     System.out.print("Please enter the new credit card number of the customer (Enter 999 to skip) --> ");
+                    customers.deleteCustomer(adminCustomer.getCredit());
                     int credit = getIntegerInput(999, 9999);
                     if (credit != 999) {
                         adminCustomer.setCredit(credit);
                     }
+                    customers.insertCustomer(adminCustomer);
                     break;
                 case 3:
                     // Modifying the email of the customer
