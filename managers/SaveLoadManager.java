@@ -79,6 +79,40 @@ public class SaveLoadManager implements Serializable {
         return wishlist;
     }
 
+    public void saveHaveWatched(HaveWatched haveWatched) {
+        // Customer that saves the wishlist queue to the wishlist.ser file
+        try {
+            FileOutputStream file = new FileOutputStream("data/havewatched.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(haveWatched);
+            out.close();
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public HaveWatched loadHaveWatched() {
+        // Function that loads the wishlist queue from the wishlist.ser file
+        HaveWatched haveWatched = new HaveWatched();
+        try {
+            File file = new File("data/havewatched.ser");
+            boolean fileCreated = file.createNewFile();
+            FileInputStream fileInput = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fileInput);
+            haveWatched = (HaveWatched) in.readObject();
+        } catch (FileNotFoundException e) {
+            System.out.println("data/havewatched.ser file is not found");
+        } catch (EOFException e) {
+            System.out.println("data/havewatched.ser is Empty");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return haveWatched;
+    }
+
     public void saveMovieScoresHeap(MovieScoresHeap movieScoresHeap) {
         // Function that saves the movie scores heap to the movieScoresHeap.ser file
         try {
@@ -181,10 +215,11 @@ public class SaveLoadManager implements Serializable {
         return moviesByDate;
     }
 
-    public void saveAllData(CustomerStorage customerStorage, Wishlist wishlist, MovieScoresHeap movieScoresHeap, MoviesByID moviesByID, MoviesByDate moviesByDate) {
+    public void saveAllData(CustomerStorage customerStorage, Wishlist wishlist, HaveWatched haveWatched, MovieScoresHeap movieScoresHeap, MoviesByID moviesByID, MoviesByDate moviesByDate) {
         System.out.println("Saving all data...");
         saveCustomers(customerStorage);
         saveWishlist(wishlist);
+        saveHaveWatched(haveWatched);
         saveMovieScoresHeap(movieScoresHeap);
         saveMoviesByID(moviesByID);
         saveMoviesByDate(moviesByDate);
@@ -196,6 +231,7 @@ public class SaveLoadManager implements Serializable {
             System.out.println("Clearing all data...");
             emptyFile("data/customers.ser");
             emptyFile("data/wishlist.ser");
+            emptyFile("data/havewatched.ser");
             emptyFile("data/moviesByID.ser");
             emptyFile("data/moviesByDate.ser");
             emptyFile("data/movieScoresHeap.ser");

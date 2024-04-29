@@ -14,6 +14,7 @@ public class TestTerminal implements Serializable {
         SaveLoadManager saveLoadManager = new SaveLoadManager();
         CustomerStorage customers = saveLoadManager.loadCustomers();
         Wishlist wishlist = saveLoadManager.loadWishlist();
+        HaveWatched haveWatched = saveLoadManager.loadHaveWatched();
         MovieScoresHeap movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
         MoviesByID moviesByID = saveLoadManager.loadMoviesByID();
         MoviesByDate moviesByDate = saveLoadManager.loadMoviesByDate();
@@ -88,7 +89,7 @@ public class TestTerminal implements Serializable {
                                     break;
                                 }
                             }
-                            saveLoadManager.saveAllData(customers, wishlist, movieScoresHeap, moviesByID, moviesByDate);
+                            saveLoadManager.saveAllData(customers, wishlist, haveWatched, movieScoresHeap, moviesByID, moviesByDate);
                             customerChoice = customerMenu();
                         }
 
@@ -167,14 +168,14 @@ public class TestTerminal implements Serializable {
                                     importManager.importAllData();
                                 }
                             }
-                            saveLoadManager.saveAllData(customers, wishlist, movieScoresHeap, moviesByID, moviesByDate);
+                            saveLoadManager.saveAllData(customers, wishlist, haveWatched, movieScoresHeap, moviesByID, moviesByDate);
                             adminChoice = adminMenu();
                         }
                     }
                     break;
                 }
             }
-            saveLoadManager.saveAllData(customers, wishlist, movieScoresHeap, moviesByID, moviesByDate);
+            saveLoadManager.saveAllData(customers, wishlist, haveWatched, movieScoresHeap, moviesByID, moviesByDate);
             System.out.println("\n\n\n\n\n\n\n\n\n\nReturning to the main menu...\n");  // Added blank lines here in order to prevent confusing output
             choice = mainMenu();
         }
