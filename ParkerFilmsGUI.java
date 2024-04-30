@@ -668,12 +668,12 @@ public class ParkerFilmsGUI {
             panel.add(movieInfoPanel, BorderLayout.CENTER);  // Adding the infoPanel to the main panel
 
             // Adding the buttons
-            JButton removeButton = new JButton("Remove Least Rated Movie");
-            JButton backButton = new JButton("Go Back");
+            JButton goBackButton = new JButton("Go Back");
+            JButton removeButton = new JButton("Remove the least Rated Movie");
+            goBackButton.setFont(buttonFont);
             removeButton.setFont(buttonFont);
-            backButton.setFont(buttonFont);
 
-            // Action listener for removeButton
+            // Action listener for goBackButton
             removeButton.addActionListener(e -> {
                 // If the user choose to remove the least rated movie
 
@@ -701,13 +701,13 @@ public class ParkerFilmsGUI {
             });
 
             // If back-button is clicked, return to the adminMenu
-            backButton.addActionListener(e -> adminMenu());
+            goBackButton.addActionListener(e -> adminMenu());
 
             // Adding the buttons to the screen
             JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Center align the buttons
+            buttonPanel.add(goBackButton);
+            buttonPanel.add(Box.createHorizontalStrut(50));
             buttonPanel.add(removeButton);
-            buttonPanel.add(Box.createHorizontalStrut(100));
-            buttonPanel.add(backButton);
             buttonPanel.setBackground(panel.getBackground());
             panel.add(buttonPanel, BorderLayout.SOUTH);
         } else {
@@ -796,7 +796,6 @@ public class ParkerFilmsGUI {
         buttonPanel.add(setAsUnavaliableButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
-
 
         ListSelectionModel selectionModel = table.getSelectionModel();  // When a row is selected
 
