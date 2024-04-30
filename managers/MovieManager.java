@@ -40,6 +40,7 @@ public class MovieManager implements Serializable {
     public void deleteMinScoreMovie() {
         // Simple method to delete the moin scored movie from the Data BST, ID BST and Score Heap
         Movie minRated = movieScoresHeap.findMinScore();
+        minRated.setAvailability(false);
         movieScoresHeap.deleteMinScore();
         moviesByDate.deleteMovieDate(minRated);
         moviesByID.deleteMovieID(minRated);

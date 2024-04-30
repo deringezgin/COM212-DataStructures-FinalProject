@@ -40,62 +40,65 @@ public class MoviesByDate implements Serializable {
     }
 
     public void deleteMovieDate(Movie target) {
-        // Deleting a movie from the Date BST
-        if (root != null) {
-            if (root == target) {
-                root = deleteRoot(root);
+        // Function to delete the Node (target) in the BST
+        if (root != null) {  // If it's not an empty tree
+            if (root == target) {  // If the Node is the root
+                root = deleteRoot(root);  // Directly call the deleteRoot function
             } else {
-                deleter(root, target);
+                deleter(root, target);  // If it's not the root, pass to the deleter
             }
         }
     }
 
-    private void deleter(Movie parent, Movie target) {
-        // Recursive delete function
-        if (parent.getLeftDateMovie() != null && target.getReleaseDate() < parent.getReleaseDate()) {
-            if (target.getReleaseDate() == parent.getLeftDateMovie().getReleaseDate()) {
-                parent.setLeftDateMovie(deleteRoot(parent.getLeftDateMovie()));
+    public void deleter(Movie parent, Movie target) {
+        // Recursive delete function to reach the Node we'd like to delete and call the deleteRoot method
+        if (parent.getLeftDateMovie() != null && target.getReleaseDate() < parent.getReleaseDate()) {  // If left is not empty and target Node is less than the current parent
+            if (target.getReleaseDate() == parent.getLeftDateMovie().getReleaseDate()) {  // If the left Node is our target
+                parent.setLeftDateMovie(deleteRoot(parent.getLeftDateMovie()));  // Call the deleteRoot on the left child of the parent and set the new root to the left child of the parent
             } else {
-                deleter(parent.getLeftDateMovie(), target);
+                deleter(parent.getLeftDateMovie(), target);  // If we don't have a match, proceed further in the BST
             }
-        } else if (parent.getRightDateMovie() != null && target.getReleaseDate() > parent.getReleaseDate()) {
-            if (target.getReleaseDate() == parent.getRightDateMovie().getReleaseDate()) {
-                parent.setRightIDMovie(deleteRoot(parent.getRightDateMovie()));
+        } else if (parent.getRightDateMovie() != null && target.getReleaseDate() > parent.getReleaseDate()) {  // If right is not empty and target Node is more than the current parent
+            if (target.getReleaseDate() == parent.getRightDateMovie().getReleaseDate()) { // Applying the same procedures but for the right side
+                parent.setRightDateMovie(deleteRoot(parent.getRightDateMovie()));
             } else {
                 deleter(parent.getRightDateMovie(), target);
             }
         }
     }
 
-    private Movie deleteRoot(Movie target) {
-        // Function to delete root
-        if (target.getLeftDateMovie() == null) {
-            Movie temp = target;
-            target = target.getRightDateMovie();
-            temp.setRightIDMovie(null);
-            return target;
-        } else if (target.getRightDateMovie() == null) {
-            Movie temp = target;
-            target = target.getLeftDateMovie();
+    private Movie deleteRoot(Movie x) {
+        // Function to delete the Node in a BST that is the root of the tree
+        if (x.getLeftDateMovie() == null) {
+            // If the Node we want to delete is a Node with only one right child (This case also catches Nodes with no child)
+            Movie temp = x;  // Saving the Node in a temp variable
+            x = x.getRightDateMovie();  // Setting it into its right child
+            temp.setRightDateMovie(null);  // Disconnecting the Node we'd like to delete
+            return x;
+        } else if (x.getRightDateMovie() == null) {
+            // If the Node we want to delete is a Node with only one left child, we apply the same procedure as before but with the left side
+            Movie temp = x;
+            x = x.getLeftDateMovie();
             temp.setLeftDateMovie(null);
-            return target;
+            return x;
         } else {
-            Movie temp = getSuccessor(target.getRightDateMovie());
-            deleteMovieDate(temp);
-            temp.setRightIDMovie(target.getRightDateMovie());
-            temp.setLeftDateMovie(target.getLeftDateMovie());
-            target.setLeftDateMovie(null);
-            target.setRightIDMovie(null);
+            // If the Node we want to delete is a Node with a child on both sides
+            Movie temp = getSuccessor(x.getRightDateMovie());  // Finding the successor
+            deleteMovieDate(temp);  // Removing the successor from the tree
+            temp.setRightDateMovie(x.getRightDateMovie());  // Inserting the successor into the place of the Node we'd like to delete
+            temp.setLeftDateMovie(x.getLeftDateMovie());
+            x.setLeftDateMovie(null);  // Disconnecting the Node we'd like to delete
+            x.setRightDateMovie(null);
             return temp;
         }
     }
 
-    private Movie getSuccessor(Movie movie) {
+    private Movie getSuccessor(Movie x) {
         // Function to find the successor of a Node
-        while (movie.getLeftDateMovie() != null) {
-            movie = movie.getLeftDateMovie();
+        while (x.getLeftDateMovie() != null) {  // While the left side is not null
+            x = x.getLeftDateMovie();
         }
-        return movie;
+        return x;
     }
 
     public Movie searchMovieByDate(int movieDate) {
