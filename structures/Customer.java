@@ -27,11 +27,20 @@ public class Customer implements Serializable {
         this.password = "password";
     }
 
-    public Customer(String name, String email, int credit, String password) {
+    public Customer(String name, String email, int credit, Wishlist wishlist) {
         this.name = name;
         this.credit = credit;
         this.email = email;
-        this.wishlist = new Wishlist();
+        this.wishlist = wishlist;
+        this.haveWatched = new HaveWatched();
+        this.password = "password";
+    }
+
+    public Customer(String name, String email, int credit, Wishlist wishlist, String password) {
+        this.name = name;
+        this.credit = credit;
+        this.email = email;
+        this.wishlist = wishlist;
         this.haveWatched = new HaveWatched();
         this.password = password;
     }

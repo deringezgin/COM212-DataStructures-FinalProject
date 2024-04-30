@@ -162,7 +162,7 @@ public class parkerFilmsGUI {
             // Validating the input of the customer
             boolean valid = newCustomerValidation(username, email, credit, password);
             if (valid) {  // If it's valid, creates a new customer, shows a message and moves to the login menu
-                Customer customer = new Customer(username, email, Integer.parseInt(credit), password);
+                Customer customer = new Customer(username, email, Integer.parseInt(credit), new Wishlist(), password);
                 customers.insertCustomer(customer);
                 saveLoadManager.saveCustomers(customers);
                 JOptionPane.showMessageDialog(panel, "Customer successfully created");
@@ -291,9 +291,10 @@ public class parkerFilmsGUI {
         accessHaveWatched.setFont(textFont);
         JPanel buttonPanel = new JPanel();  // Creating a panel for storing the buttons
         buttonPanel.setBackground(panel.getBackground());  // Using the parent background
-        buttonPanel.setLayout(new GridLayout(4, 1, 0, 15));
+        buttonPanel.setLayout(new GridLayout(5, 1, 0, 0));
         buttonPanel.add(accessMoviesByID);
         buttonPanel.add(accessWishlist);
+        buttonPanel.add(accessHaveWatched);
         buttonPanel.add(printMoviesByDate);
         buttonPanel.add(goMainMenu);
         panel.add(buttonPanel, BorderLayout.CENTER);
@@ -305,7 +306,12 @@ public class parkerFilmsGUI {
 
         accessWishlist.addActionListener(e -> {
             // If the button is clicked run the method that creates the screen with the wishlist access interface
+            accessWishlist(panel, customer, customers, saveLoadManager, movieManager);
+        });
 
+        accessHaveWatched.addActionListener(e -> {
+            // If the button is clicked run the method that creates the screen with the wishlist access interface
+            accessHaveWatched(panel, customer, customers, saveLoadManager, movieManager);
         });
 
         printMoviesByDate.addActionListener(e -> {
@@ -321,6 +327,93 @@ public class parkerFilmsGUI {
         // Updating the screen
         panel.revalidate();
         panel.repaint();
+    }
+
+    private static void accessWishlist(JPanel panel, Customer customer, CustomerStorage customers, SaveLoadManager saveLoadManager, MovieManager movieManager) {
+        // Function to remove the least rated movie from the system
+        panel.removeAll();  // Clearing the screen
+
+        // Setting up the screen title
+        JLabel leastRatedTitleLabel = new JLabel("Access Wishlist", JLabel.CENTER);
+        leastRatedTitleLabel.setFont(titleFont);
+        panel.add(leastRatedTitleLabel, BorderLayout.NORTH);
+
+        // Saving the first movie in the wishlist in a variable
+        Movie firstMovie = customer.getWishlist().getFirstMovie();
+        if (firstMovie != null) {  // If the least rated movie is not null (not empty)
+            JPanel movieInfoPanel = new JPanel(new GridLayout(5, 1));  // Create a new panel for displaying the information of the movie
+            movieInfoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+            movieInfoPanel.setBackground(panel.getBackground());
+
+            // Creating fields for the attributes of the movie
+            JLabel titleLabel = new JLabel("Title: " + firstMovie.getTitle());
+            JLabel releaseDateLabel = new JLabel("Release Date: " + firstMovie.convertToDate());
+            JLabel idLabel = new JLabel("ID: " + firstMovie.getID());
+            JLabel ratingLabel = new JLabel("Rating: " + firstMovie.getScore());
+            JLabel availabilityLabel = new JLabel("Availability: " + firstMovie.getAvailability());
+            titleLabel.setFont(textFont);  // Setting the font
+            releaseDateLabel.setFont(textFont);
+            idLabel.setFont(textFont);
+            ratingLabel.setFont(textFont);
+            availabilityLabel.setFont(textFont);
+            movieInfoPanel.add(titleLabel);  // Adding the elements to the panel
+            movieInfoPanel.add(releaseDateLabel);
+            movieInfoPanel.add(idLabel);
+            movieInfoPanel.add(ratingLabel);
+            movieInfoPanel.add(availabilityLabel);
+            panel.add(movieInfoPanel, BorderLayout.CENTER);  // Adding the infoPanel to the main panel
+
+            if(firstMovie.getAvailability()) {
+                // Adding the buttons
+                JButton removeButton = new JButton("Remove the Movie");
+                JButton backButton = new JButton("Go Back");
+                removeButton.setFont(textFont);
+                backButton.setFont(textFont);
+
+                // Action listener for removeButton
+                removeButton.addActionListener(e -> {
+                    // If the user choose to remove the least rated movie
+                    customer.getWishlist().deleteFirstMovie();
+//                    saveLoadManager.saveWishlist(customer.getWishlist());
+                    saveLoadManager.saveCustomers(customers);
+                });
+
+                // If back-button is clicked, return to the adminMenu
+                backButton.addActionListener(e -> customerMenu(panel, customer, customers, saveLoadManager, movieManager));
+
+                // Adding the buttons to the screen
+                JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Center align the buttons
+                buttonPanel.add(removeButton);
+                buttonPanel.add(backButton);
+                buttonPanel.setBackground(panel.getBackground());
+                panel.add(buttonPanel, BorderLayout.SOUTH);
+            }
+
+
+
+        } else {
+            // If there are no movies in the system, prints a message
+            JLabel noMoviesLabel = new JLabel("No available movies to show", JLabel.CENTER);
+            noMoviesLabel.setFont(titleFont);
+            panel.add(noMoviesLabel, BorderLayout.CENTER);
+
+            // Adding a back button that'd return to the adminMenu
+            JButton backButton = new JButton("Go Back");
+            backButton.setFont(textFont);
+            backButton.addActionListener(e -> customerMenu(panel, customer, customers, saveLoadManager, movieManager));
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            buttonPanel.add(backButton);
+            buttonPanel.setBackground(panel.getBackground());
+            panel.add(buttonPanel, BorderLayout.SOUTH);
+        }
+
+        // Updating the screen
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private static void accessHaveWatched(JPanel panel, Customer customer, CustomerStorage customers, SaveLoadManager saveLoadManager, MovieManager movieManager) {
+
     }
 
     private static void viewByReleaseDateCustomer(JPanel panel, Customer customer, CustomerStorage customers, SaveLoadManager saveLoadManager, MovieManager movieManager) {
@@ -443,6 +536,7 @@ public class parkerFilmsGUI {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
                         customer.getWishlist().addMovie(foundMovie);
                         saveLoadManager.saveWishlist(customer.getWishlist());
+                        saveLoadManager.saveCustomers(customers);
                         JOptionPane.showMessageDialog(panel, "Movie added to wishlist");
                     });
 
@@ -822,4 +916,3 @@ public class parkerFilmsGUI {
         }
     }
 }
-

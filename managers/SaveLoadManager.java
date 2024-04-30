@@ -53,6 +53,7 @@ public class SaveLoadManager implements Serializable {
             out.writeObject(wishlist);
             out.close();
             file.close();
+            System.out.println("Wishlist is saved to the data/wishlist.ser file");
         } catch (IOException e) {
             e.printStackTrace();
         }

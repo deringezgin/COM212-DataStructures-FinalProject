@@ -25,14 +25,7 @@ public class Wishlist implements Serializable {
             return null;
         }
 
-        Movie movie = wishList[firstMovieIndex];
-        if (!movie.getAvailability()) {
-            System.out.println("The first movie is not available in the system anymore.");
-            System.out.println("Accessing the next movie...");
-            deleteFirstMovie();
-            return getFirstMovie();
-        }
-        return movie;
+        return wishList[firstMovieIndex];
     }
 
     public void deleteFirstMovie() {
