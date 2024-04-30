@@ -38,143 +38,6 @@ public class ParkerFilmsGUI {
         this.movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
     }
 
-    private void welcomeMenu() {
-        // Main menu of our program that has 3 options: Customer login - Admin Login and New Customer Creation
-        // Title of the welcome menu
-        JLabel titleLabel = new JLabel("Parker Films", JLabel.CENTER);
-        titleLabel.setFont(new Font("Verdana", Font.BOLD, 60));
-        panel.add(titleLabel, BorderLayout.CENTER); // Add the title label to the center of the panel
-
-        // Creating buttons, setting fonts and sizes
-        JButton customerLoginButton = new JButton("Customer");
-        JButton adminLoginButton = new JButton("Admin");
-        JButton newCustomerButton = new JButton("New Customer");
-        Font mainButtonFont = new Font("Verdana", Font.BOLD, 20);
-        customerLoginButton.setFont(mainButtonFont);
-        adminLoginButton.setFont(mainButtonFont);
-        newCustomerButton.setFont(mainButtonFont);
-        Dimension buttonSize = new Dimension(200, 70);
-        customerLoginButton.setPreferredSize(buttonSize);
-        adminLoginButton.setPreferredSize(buttonSize);
-        newCustomerButton.setPreferredSize(buttonSize);
-
-        // Spacing between the elements
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(panel.getBackground());  // Match the background color
-        buttonPanel.add(customerLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));  // Add space between buttons
-        buttonPanel.add(adminLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));  // Add space between buttons
-        buttonPanel.add(newCustomerButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);  // Add the button panel to the bottom of the panel
-
-        customerLoginButton.addActionListener(e -> {
-            // If the customer login button is clicked, create a login menu in the customer version
-            loginMenu("Customer");
-        });
-
-        adminLoginButton.addActionListener(e -> {
-            // If the admin login button is clicked, create a login menu in the admin version
-            loginMenu("Admin");
-        });
-
-        newCustomerButton.addActionListener(e -> {
-            // If the new customer button is clicked, go to the sign-up page
-            newCustomerMenu();
-        });
-
-        // Updating the screen
-        panel.revalidate();
-        panel.repaint();
-    }
-
-    private void loginMenu(String userType) {
-        // The login menu that can be used both for admin and the customer
-        panel.removeAll();  // Clear the panel
-
-        // Creating the page title using the input string
-        JLabel loginTitleLabel = new JLabel(userType + " Login", JLabel.CENTER);
-        loginTitleLabel.setFont(titleFont);
-        panel.add(loginTitleLabel, BorderLayout.NORTH);
-
-        JPanel loginPanel = new JPanel(new GridLayout(4, 1, 0, 50));  // Creating a panel for storing the login elements
-        loginPanel.setBackground(panel.getBackground());  // Setting the background color to the parent
-
-        // Creating labels and buttons
-        JLabel usernameLabel = new JLabel("Username", JLabel.CENTER);
-        JLabel passwordLabel = new JLabel("Password", JLabel.CENTER);
-        JButton loginButton = new JButton("Login");
-        JButton backButton = new JButton("Go Back");
-        JTextField usernameField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
-        usernameLabel.setFont(subTitleFont);
-        usernameField.setFont(subTitleFont);
-        usernameField.setPreferredSize(new Dimension(150, 20));
-        passwordLabel.setFont(subTitleFont);
-        passwordField.setFont(subTitleFont);
-        loginButton.setFont(buttonFont);
-        backButton.setFont(buttonFont);
-        usernameField.setHorizontalAlignment(JTextField.CENTER);
-        passwordField.setHorizontalAlignment(JTextField.CENTER);
-        Dimension buttonSize = new Dimension(200, 40);  // Setting button size
-        loginButton.setPreferredSize(buttonSize);
-        backButton.setPreferredSize(buttonSize);
-
-        panel.add(Box.createVerticalStrut(5), BorderLayout.CENTER);  // Adding spacing
-
-        // Creating another panel for the buttons and adding buttons in it
-        JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(panel.getBackground());  // Setting background color to the parent
-        buttonPanel.add(backButton);
-        buttonPanel.add(Box.createHorizontalStrut(120));  // Adding spacing
-        buttonPanel.add(loginButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);  // Add buttons to the bottom of the panel
-
-        JPanel emptyPanel = new JPanel(new FlowLayout());
-        emptyPanel.setBackground(panel.getBackground());
-
-        // Adding the login fields to the login panel
-        loginPanel.add(usernameLabel);
-        loginPanel.add(usernameField);
-        loginPanel.add(passwordLabel);
-        loginPanel.add(passwordField);
-
-        // Add login panel to the center of the main panel
-        panel.add(loginPanel, BorderLayout.CENTER);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
-        loginButton.addActionListener(e -> {
-            // When the login button is clicked...
-            String username = usernameField.getText();  // Retrieve the text in the fields
-            String password = new String(passwordField.getPassword());
-            if (userType.equals("Admin")) {  // If the user type is admin
-                if (adminValidation(username, password)) {  // Perform the admin validation and if validated, move to the admin menu
-                    JOptionPane.showMessageDialog(panel, "Admin successfully logged in");
-                    adminMenu();
-                } else {  // If validation was unsuccessfull show a message
-                    JOptionPane.showMessageDialog(panel, "Admin username / password is wrong");
-                }
-            } else if (userType.equals("Customer")) {  // If the user type is customer
-                if (customerValidation(username, password, customers)) {  // Perform customer validation and if validated
-                    Customer currentCustomer = customers.lookUpCustomer(Integer.parseInt(username));  // Find the customer in the customerStorage
-                    JOptionPane.showMessageDialog(panel, "Customer successfully logged in");
-                    customerMenu(currentCustomer);  // Move to the customer menu with the customer object
-                } else {  // If the customer couldn't be validated show a message
-                    JOptionPane.showMessageDialog(panel, "Customer username / password is wrong.\n" + "Your username is the last 4 digits of your credit card.\n" + "Your password is 'password' by default or the password you set.\n" + "Be sure that you're registered in the system!");
-                }
-            }
-        });
-
-        backButton.addActionListener(e -> {
-            // If the back button is clicked, return to the welcome menu
-            panel.removeAll();
-            welcomeMenu();
-        });
-
-        // Update the panel
-        panel.revalidate();
-        panel.repaint();
-    }
-
     //////////////////// CUSTOMER SIDE OF THE PROGAM //////////////////////////////////////////////////////////////////
     private void customerMenu(Customer customer) {
         // Customer menu that has the different options for the customer
@@ -1158,6 +1021,145 @@ public class ParkerFilmsGUI {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //////////////////// OTHER GUI COMPONENTS /////////////////////////////////////////////////////////////////////////
+
+    private void welcomeMenu() {
+        // Main menu of our program that has 3 options: Customer login - Admin Login and New Customer Creation
+        // Title of the welcome menu
+        JLabel titleLabel = new JLabel("Parker Films", JLabel.CENTER);
+        titleLabel.setFont(new Font("Verdana", Font.BOLD, 60));
+        panel.add(titleLabel, BorderLayout.CENTER); // Add the title label to the center of the panel
+
+        // Creating buttons, setting fonts and sizes
+        JButton customerLoginButton = new JButton("Customer");
+        JButton adminLoginButton = new JButton("Admin");
+        JButton newCustomerButton = new JButton("New Customer");
+        Font mainButtonFont = new Font("Verdana", Font.BOLD, 20);
+        customerLoginButton.setFont(mainButtonFont);
+        adminLoginButton.setFont(mainButtonFont);
+        newCustomerButton.setFont(mainButtonFont);
+        Dimension buttonSize = new Dimension(200, 70);
+        customerLoginButton.setPreferredSize(buttonSize);
+        adminLoginButton.setPreferredSize(buttonSize);
+        newCustomerButton.setPreferredSize(buttonSize);
+
+        // Spacing between the elements
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBackground(panel.getBackground());  // Match the background color
+        buttonPanel.add(customerLoginButton);
+        buttonPanel.add(Box.createHorizontalStrut(20));  // Add space between buttons
+        buttonPanel.add(adminLoginButton);
+        buttonPanel.add(Box.createHorizontalStrut(20));  // Add space between buttons
+        buttonPanel.add(newCustomerButton);
+        panel.add(buttonPanel, BorderLayout.SOUTH);  // Add the button panel to the bottom of the panel
+
+        customerLoginButton.addActionListener(e -> {
+            // If the customer login button is clicked, create a login menu in the customer version
+            loginMenu("Customer");
+        });
+
+        adminLoginButton.addActionListener(e -> {
+            // If the admin login button is clicked, create a login menu in the admin version
+            loginMenu("Admin");
+        });
+
+        newCustomerButton.addActionListener(e -> {
+            // If the new customer button is clicked, go to the sign-up page
+            newCustomerMenu();
+        });
+
+        // Updating the screen
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void loginMenu(String userType) {
+        // The login menu that can be used both for admin and the customer
+        panel.removeAll();  // Clear the panel
+
+        // Creating the page title using the input string
+        JLabel loginTitleLabel = new JLabel(userType + " Login", JLabel.CENTER);
+        loginTitleLabel.setFont(titleFont);
+        panel.add(loginTitleLabel, BorderLayout.NORTH);
+
+        JPanel loginPanel = new JPanel(new GridLayout(4, 1, 0, 50));  // Creating a panel for storing the login elements
+        loginPanel.setBackground(panel.getBackground());  // Setting the background color to the parent
+
+        // Creating labels and buttons
+        JLabel usernameLabel = new JLabel("Username", JLabel.CENTER);
+        JLabel passwordLabel = new JLabel("Password", JLabel.CENTER);
+        JButton loginButton = new JButton("Login");
+        JButton backButton = new JButton("Go Back");
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        usernameLabel.setFont(subTitleFont);
+        usernameField.setFont(subTitleFont);
+        usernameField.setPreferredSize(new Dimension(150, 20));
+        passwordLabel.setFont(subTitleFont);
+        passwordField.setFont(subTitleFont);
+        loginButton.setFont(buttonFont);
+        backButton.setFont(buttonFont);
+        usernameField.setHorizontalAlignment(JTextField.CENTER);
+        passwordField.setHorizontalAlignment(JTextField.CENTER);
+        Dimension buttonSize = new Dimension(200, 40);  // Setting button size
+        loginButton.setPreferredSize(buttonSize);
+        backButton.setPreferredSize(buttonSize);
+
+        panel.add(Box.createVerticalStrut(5), BorderLayout.CENTER);  // Adding spacing
+
+        // Creating another panel for the buttons and adding buttons in it
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.setBackground(panel.getBackground());  // Setting background color to the parent
+        buttonPanel.add(backButton);
+        buttonPanel.add(Box.createHorizontalStrut(120));  // Adding spacing
+        buttonPanel.add(loginButton);
+        panel.add(buttonPanel, BorderLayout.SOUTH);  // Add buttons to the bottom of the panel
+
+        JPanel emptyPanel = new JPanel(new FlowLayout());
+        emptyPanel.setBackground(panel.getBackground());
+
+        // Adding the login fields to the login panel
+        loginPanel.add(usernameLabel);
+        loginPanel.add(usernameField);
+        loginPanel.add(passwordLabel);
+        loginPanel.add(passwordField);
+
+        // Add login panel to the center of the main panel
+        panel.add(loginPanel, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+        loginButton.addActionListener(e -> {
+            // When the login button is clicked...
+            String username = usernameField.getText();  // Retrieve the text in the fields
+            String password = new String(passwordField.getPassword());
+            if (userType.equals("Admin")) {  // If the user type is admin
+                if (adminValidation(username, password)) {  // Perform the admin validation and if validated, move to the admin menu
+                    JOptionPane.showMessageDialog(panel, "Admin successfully logged in");
+                    adminMenu();
+                } else {  // If validation was unsuccessfull show a message
+                    JOptionPane.showMessageDialog(panel, "Admin username / password is wrong");
+                }
+            } else if (userType.equals("Customer")) {  // If the user type is customer
+                if (customerValidation(username, password, customers)) {  // Perform customer validation and if validated
+                    Customer currentCustomer = customers.lookUpCustomer(Integer.parseInt(username));  // Find the customer in the customerStorage
+                    JOptionPane.showMessageDialog(panel, "Customer successfully logged in");
+                    customerMenu(currentCustomer);  // Move to the customer menu with the customer object
+                } else {  // If the customer couldn't be validated show a message
+                    JOptionPane.showMessageDialog(panel, "Customer username / password is wrong.\n" + "Your username is the last 4 digits of your credit card.\n" + "Your password is 'password' by default or the password you set.\n" + "Be sure that you're registered in the system!");
+                }
+            }
+        });
+
+        backButton.addActionListener(e -> {
+            // If the back button is clicked, return to the welcome menu
+            panel.removeAll();
+            welcomeMenu();
+        });
+
+        // Update the panel
+        panel.revalidate();
+        panel.repaint();
+    }
+
     private void newCustomerMenu() {
         // Function to create a new customer in our program
         panel.removeAll();  // Clear the panel
@@ -1249,6 +1251,9 @@ public class ParkerFilmsGUI {
         panel.revalidate();
         panel.repaint();
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////// EXTRA FUNCTIONS ////////////////////////////////////////////////////////////////////////////////
 
     private void setPanel(JPanel panel) {
         this.panel = panel;
@@ -1318,6 +1323,8 @@ public class ParkerFilmsGUI {
             ascend(currentMovie.getLeftDateMovie(), tableModel);
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(String[] args) {
         ParkerFilmsGUI filmManager = new ParkerFilmsGUI();

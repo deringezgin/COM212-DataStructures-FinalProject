@@ -276,6 +276,7 @@ public class SaveLoadManager implements Serializable {
             emptyFile("data/havewatched.ser");
             emptyFile("data/moviesByID.ser");
             emptyFile("data/moviesByDate.ser");
+            emptyFile("data/moviemanager.ser");
             emptyFile("data/movieScoresHeap.ser");
         } catch (IOException e) {
             throw new RuntimeException(e);
