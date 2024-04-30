@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 public class MoviesByDate implements Serializable {
     private Movie root;
+    private int count = 10000;
 
     public MoviesByDate() {
         root = null;
@@ -20,6 +21,7 @@ public class MoviesByDate implements Serializable {
         } else {
             inserter(root, movie);
         }
+        count += 1;
     }
 
     private void inserter(Movie parent, Movie target) {
@@ -169,5 +171,9 @@ public class MoviesByDate implements Serializable {
 
     public Movie getRoot() {
         return root;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

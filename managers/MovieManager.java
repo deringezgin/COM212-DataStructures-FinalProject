@@ -20,6 +20,7 @@ public class MovieManager implements Serializable {
     private MoviesByDate moviesByDate;
     private MoviesByID moviesByID;
     private MovieScoresHeap movieScoresHeap;
+    private int count;
 
     public MovieManager(MoviesByDate moviesByDate, MoviesByID moviesByID, MovieScoresHeap movieScoresHeap) {
         this.moviesByDate = moviesByDate;
@@ -33,6 +34,7 @@ public class MovieManager implements Serializable {
         if (!isNotFull) {
             return;
         }
+        count += 1;
         moviesByDate.insertMovieByDate(movieToInsert);
         moviesByID.insertMovieByID(movieToInsert);
     }

@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class ParkerFilmsGUI {
     private static final Font titleFont = new Font("Verdana", Font.BOLD, 40);
@@ -87,98 +88,6 @@ public class ParkerFilmsGUI {
         panel.repaint();
     }
 
-    private void newCustomerMenu() {
-        // Function to create a new customer in our program
-        panel.removeAll();  // Clear the panel
-
-        // Main title of the page
-        JLabel loginTitleLabel = new JLabel("New Customer Creation", JLabel.CENTER);
-        loginTitleLabel.setFont(titleFont);
-        panel.add(loginTitleLabel, BorderLayout.NORTH);
-
-
-        JPanel loginPanel = new JPanel(new GridLayout(5, 1, 20, 20));
-        loginPanel.setBackground(panel.getBackground());  // Getting the background color of the main panel
-
-        // Creating labels and text-fields for our program
-        JLabel nameLabel = new JLabel("Name Surname", JLabel.RIGHT);
-        JLabel emailLabel = new JLabel("Email Address", JLabel.RIGHT);
-        JLabel creditLabel = new JLabel("Credit Card Number", JLabel.RIGHT);
-        JLabel passwordLabel = new JLabel("Password", JLabel.RIGHT);
-        JTextField nameField = new JTextField();
-        JTextField emailField = new JTextField();
-        JTextField creditField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
-        JButton submitButton = new JButton("Submit");
-        JButton backButton = new JButton("Go Back");
-        nameLabel.setFont(boldTextFont);
-        nameField.setFont(textFont);
-        emailLabel.setFont(boldTextFont);
-        emailField.setFont(textFont);
-        creditLabel.setFont(boldTextFont);
-        creditField.setFont(textFont);
-        passwordLabel.setFont(boldTextFont);
-        passwordField.setFont(textFont);
-        submitButton.setFont(buttonFont);
-        backButton.setFont(buttonFont);
-        Dimension buttonSize = new Dimension(150, 50);  // Setting button size
-        submitButton.setPreferredSize(buttonSize);
-        backButton.setPreferredSize(buttonSize);
-
-        panel.add(Box.createVerticalStrut(20), BorderLayout.CENTER);  // Setting spacing
-
-        JPanel buttonPanel = new JPanel(new FlowLayout());  // Button panel for storing the buttons
-        buttonPanel.setBackground(panel.getBackground());
-        buttonPanel.add(submitButton);
-        buttonPanel.add(Box.createHorizontalStrut(60));
-        buttonPanel.add(backButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Adding the fileds on the panel and adding the panel to the screen
-        loginPanel.add(nameLabel);
-        loginPanel.add(nameField);
-        loginPanel.add(emailLabel);
-        loginPanel.add(emailField);
-        loginPanel.add(creditLabel);
-        loginPanel.add(creditField);
-        loginPanel.add(passwordLabel);
-        loginPanel.add(passwordField);
-        loginPanel.add(backButton);
-        loginPanel.add(submitButton);
-        panel.add(loginPanel, BorderLayout.CENTER);
-
-        submitButton.addActionListener(e -> {
-            // When submit button is clicked...
-            // Getting the text in the fields
-            String username = nameField.getText();
-            String email = emailField.getText();
-            String credit = creditField.getText();
-            String password = new String(passwordField.getPassword());
-
-            // Validating the input of the customer
-            boolean valid = newCustomerValidation(username, email, credit, password);
-            if (valid) {  // If it's valid, creates a new customer, shows a message and moves to the login menu
-                Customer customer = new Customer(username, email, Integer.parseInt(credit), new Wishlist(), password);
-                customers.insertCustomer(customer);
-                saveLoadManager.saveCustomers(customers);
-                JOptionPane.showMessageDialog(panel, "Customer successfully created");
-                loginMenu("Customer");
-            } else {  // if it's not valid, shows another message
-                JOptionPane.showMessageDialog(panel, "Invalid credentials.\nCheck that you entered a valid email and your credit card is a 4 digit integer.\nAlso be sure that you filled all of the fields.");
-            }
-        });
-
-        backButton.addActionListener(e -> {
-            // If the back button is clicked, removes everything and returns to the welcome menu.
-            panel.removeAll();
-            welcomeMenu();
-        });
-
-        // Update the panel
-        panel.revalidate();
-        panel.repaint();
-    }
-
     private void loginMenu(String userType) {
         // The login menu that can be used both for admin and the customer
         panel.removeAll();  // Clear the panel
@@ -250,10 +159,7 @@ public class ParkerFilmsGUI {
                     JOptionPane.showMessageDialog(panel, "Customer successfully logged in");
                     customerMenu(currentCustomer);  // Move to the customer menu with the customer object
                 } else {  // If the customer couldn't be validated show a message
-                    JOptionPane.showMessageDialog(panel, "Customer username / password is wrong.\n" +
-                            "Your username is the last 4 digits of your credit card.\n" +
-                            "Your password is 'password' by default or the password you set.\n" +
-                            "Be sure that you're registered in the system!");
+                    JOptionPane.showMessageDialog(panel, "Customer username / password is wrong.\n" + "Your username is the last 4 digits of your credit card.\n" + "Your password is 'password' by default or the password you set.\n" + "Be sure that you're registered in the system!");
                 }
             }
         });
@@ -279,7 +185,7 @@ public class ParkerFilmsGUI {
         panel.add(adminTitleLabel, BorderLayout.NORTH);
 
         // Setting up buttons and creating a button panel
-        JButton accessMoviesByID = new JButton("Access Movie by ID");  // Creating buttons
+        JButton accessMoviesByID = new JButton("Access Movie by ID or Release Date");  // Creating buttons
         JButton accessWishlist = new JButton("Access Wishlist");
         JButton accessHaveWatched = new JButton("Access the Watched Movies List");
         JButton printMoviesByDate = new JButton("View the movies in order of release date");
@@ -301,7 +207,7 @@ public class ParkerFilmsGUI {
 
         accessMoviesByID.addActionListener(e -> {
             // If the button is clicked run the method that creates the screen with the access movies by id interface
-            accessMoviesByID(customer);
+            accessMoviesByIDorReleaseDateCustomer(customer);
         });
 
         accessWishlist.addActionListener(e -> {
@@ -323,6 +229,159 @@ public class ParkerFilmsGUI {
             // If the button is clicked, it returns to the main menu.
             loginMenu("Customer");
         });
+
+        // Updating the screen
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void accessMoviesByIDorReleaseDateCustomer(Customer customer) {
+        panel.removeAll();  // Clearing the screen
+
+        // Title label
+        JLabel titleLabel = new JLabel("Access Movies By ID or Release Date", JLabel.CENTER);
+        titleLabel.setFont(boldSubTitleFont);
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        // Search Panel for saving the input field, button and text fields
+        JPanel searchPanel = new JPanel(new GridLayout(7, 2, 20, 0));
+        searchPanel.setBackground(panel.getBackground());
+
+        // Text-field for entering the movieID
+        JTextField movieIdField = new JTextField(10);
+        movieIdField.setFont(textFont);
+
+        JTextField movieDateField = new JTextField(10);
+        movieDateField.setFont(textFont);
+
+        // Setting up the search button and movie labels
+        JButton searchButtonID = new JButton("Search Movie by ID");
+        JButton searchButtonDate = new JButton("Search Movie by Date");
+        JLabel movieTitleLabel = new JLabel("Title: ");
+        JLabel movieReleaseDateLabel = new JLabel("Release Date: ");
+        JLabel movieIDLabel = new JLabel("ID: ");
+        JLabel movieRatingLabel = new JLabel("Rating: ");
+        JLabel movieAvailabilityLabel = new JLabel("Availability: ");
+        JLabel empty = new JLabel("");
+        JButton addWishlistButton = new JButton("Add Movie to the Wishlist");
+        JButton addHaveWatchedButton = new JButton("Add Movie to the Have Watched");
+        searchButtonID.setFont(boldTextFont);  // Setting the font
+        searchButtonDate.setFont(boldTextFont);
+        movieTitleLabel.setFont(boldTextFont);
+        movieReleaseDateLabel.setFont(boldTextFont);
+        movieIDLabel.setFont(boldTextFont);
+        movieRatingLabel.setFont(boldTextFont);
+        movieAvailabilityLabel.setFont(boldTextFont);
+        addWishlistButton.setFont(buttonFont);
+        addHaveWatchedButton.setFont(buttonFont);
+        addWishlistButton.setPreferredSize(new Dimension(250, 40)); // Setting the size of the buttons
+        addHaveWatchedButton.setPreferredSize(new Dimension(250, 40));
+
+        // Adding the button and the text fields to the searchPanel
+        searchPanel.add(movieIdField);
+        searchPanel.add(searchButtonID);
+        searchPanel.add(movieDateField);
+        searchPanel.add(searchButtonDate);
+        searchPanel.add(movieTitleLabel);
+        searchPanel.add(movieReleaseDateLabel);
+        searchPanel.add(movieIDLabel);
+        searchPanel.add(movieRatingLabel);
+        searchPanel.add(movieAvailabilityLabel);
+        searchPanel.add(empty);
+        panel.add(searchPanel, BorderLayout.CENTER);  // Adding the search panel to the main panel
+
+        // Creating a back button for going back to the customer menu
+        JButton backButton = new JButton("Back");
+        backButton.setFont(buttonFont);
+        backButton.addActionListener(e -> customerMenu(customer));
+
+        searchButtonID.addActionListener(e -> {
+            // Search button that looks for a movie by id
+            String movieId = movieIdField.getText();
+            movieDateField.setText("");
+            movieIdField.setText("");
+            if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
+                int movieIDInt = Integer.parseInt(movieId);
+                Movie foundMovie = movieManager.getMoviesByID().searchMovieByID(movieIDInt);  // If so, looking for the movie
+                if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
+                    movieTitleLabel.setText("Title: " + foundMovie.getTitle());
+                    movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
+                    movieRatingLabel.setText("Rating: " + foundMovie.getScore());
+                    movieIDLabel.setText("ID: " + foundMovie.getID());
+                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    searchPanel.add(addWishlistButton);  // Also show the buttons as options
+                    searchPanel.add(addHaveWatchedButton);
+
+                    addWishlistButton.addActionListener(e12 -> {
+                        // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
+                        customer.getWishlist().addMovie(foundMovie);
+                        saveLoadManager.saveWishlist(customer.getWishlist());
+                        saveLoadManager.saveCustomers(customers);
+                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
+                        accessMoviesByIDorReleaseDateCustomer(customer);
+                    });
+
+                    addHaveWatchedButton.addActionListener(e1 -> {
+                        // If the have watched button is clicked, add the movie and update the have watched
+                        customer.getWatchedList().insertMovie(foundMovie);
+                        saveLoadManager.saveHaveWatched(customer.getWatchedList());
+                        JOptionPane.showMessageDialog(panel, "Movie added to haveWatched");
+                    });
+                } else {
+                    // If the movie is not found
+                    JOptionPane.showMessageDialog(panel, "No Movie Found with the specific movie ID");
+                }
+            } else {
+                // If the input is invalid
+                JOptionPane.showMessageDialog(panel, "Please enter a valid movie ID (10000 - 99999)");
+            }
+        });
+
+        searchButtonDate.addActionListener(e -> {
+            // Search button that looks for a movie by id
+            String movieDate = movieDateField.getText();
+            movieDateField.setText("");
+            movieIdField.setText("");
+
+            if (intValidation(movieDate, 10000101, 99999999)) {  // Checking if the input is a valid integer in the range
+                int movieIDInt = Integer.parseInt(movieDate);
+                Movie foundMovie = movieManager.getMoviesByDate().searchMovieByDate(movieIDInt);  // If so, looking for the movie
+                if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
+                    movieTitleLabel.setText("Title: " + foundMovie.getTitle());
+                    movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
+                    movieRatingLabel.setText("Rating: " + foundMovie.getScore());
+                    movieIDLabel.setText("ID: " + foundMovie.getID());
+                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    searchPanel.add(addWishlistButton);  // Also show the buttons as options
+                    searchPanel.add(addHaveWatchedButton);
+
+                    addWishlistButton.addActionListener(e12 -> {
+                        // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
+                        customer.getWishlist().addMovie(foundMovie);
+                        saveLoadManager.saveWishlist(customer.getWishlist());
+                        saveLoadManager.saveCustomers(customers);
+                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Wish-List");
+                        accessMoviesByIDorReleaseDateCustomer(customer);
+                    });
+
+                    addHaveWatchedButton.addActionListener(e1 -> {
+                        // If the have watched button is clicked, add the movie and update the have watched
+                        customer.getWatchedList().insertMovie(foundMovie);
+                        saveLoadManager.saveHaveWatched(customer.getWatchedList());
+                        JOptionPane.showMessageDialog(panel, "Movie added to Watched List");
+                    });
+                } else {
+                    // If the movie is not found
+                    JOptionPane.showMessageDialog(panel, "No Movie Found with the specific release Date");
+                }
+            } else {
+                // If the input is invalid
+                JOptionPane.showMessageDialog(panel, "Please enter a valid Release Date (YYYYMMDD)");
+            }
+        });
+
+
+        panel.add(backButton, BorderLayout.SOUTH);
 
         // Updating the screen
         panel.revalidate();
@@ -391,11 +450,10 @@ public class ParkerFilmsGUI {
                 buttonPanel.setBackground(panel.getBackground());
                 panel.add(buttonPanel, BorderLayout.SOUTH);
             } else {
-                JOptionPane.showMessageDialog(panel, "Sorry the movie is not available.\nIt'll be removed from the system.");
+                JOptionPane.showMessageDialog(panel, firstMovie.getTitle() + "Sorry the movie is not available.\nIt'll be removed from the system.");
                 customer.getWishlist().deleteFirstMovie();
                 saveLoadManager.saveWishlist(customer.getWishlist());
                 saveLoadManager.saveCustomers(customers);
-                accessWishlist(customer);
             }
 
 
@@ -505,6 +563,7 @@ public class ParkerFilmsGUI {
                         JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Have Watched.");
                         saveLoadManager.saveHaveWatched(customer.getWatchedList());
                         saveLoadManager.saveCustomers(customers);
+                        table.clearSelection();
                         viewByReleaseDateCustomer(customer);
                     });
 
@@ -514,6 +573,7 @@ public class ParkerFilmsGUI {
                         JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Wishlist.");
                         saveLoadManager.saveWishlist(customer.getWishlist());
                         saveLoadManager.saveCustomers(customers);
+                        table.clearSelection();
                         viewByReleaseDateCustomer(customer);
                     });
                 } else {
@@ -524,106 +584,6 @@ public class ParkerFilmsGUI {
         });
 
         // Refreshing the window
-        panel.revalidate();
-        panel.repaint();
-    }
-
-    private void accessMoviesByID(Customer customer) {
-        panel.removeAll();  // Clearing the screen
-
-        // Title label
-        JLabel titleLabel = new JLabel("Access Movies By ID", JLabel.CENTER);
-        titleLabel.setFont(titleFont);
-        panel.add(titleLabel, BorderLayout.NORTH);
-
-        // Search Panel for saving the input field, button and text fields
-        JPanel searchPanel = new JPanel(new GridLayout(6, 2, 20, 0));
-        searchPanel.setBackground(panel.getBackground());
-
-        // Text-field for entering the movieID
-        JTextField movieIdField = new JTextField(10);
-        movieIdField.setFont(textFont);
-
-        // Setting up the search button and movie labels
-        JButton searchButton = new JButton("Search Movie");
-        JLabel movieTitleLabel = new JLabel("Title: ");
-        JLabel movieReleaseDateLabel = new JLabel("Release Date: ");
-        JLabel movieIDLabel = new JLabel("ID: ");
-        JLabel movieRatingLabel = new JLabel("Rating: ");
-        JLabel movieAvailabilityLabel = new JLabel("Availability: ");
-        JLabel empty = new JLabel("");
-        JButton addWishlistButton = new JButton("Add Movie to the Wishlist");
-        JButton addHaveWatchedButton = new JButton("Add Movie to the Have Watched");
-        searchButton.setFont(boldTextFont);  // Setting the font
-        movieTitleLabel.setFont(boldTextFont);
-        movieReleaseDateLabel.setFont(boldTextFont);
-        movieIDLabel.setFont(boldTextFont);
-        movieRatingLabel.setFont(boldTextFont);
-        movieAvailabilityLabel.setFont(boldTextFont);
-        addWishlistButton.setFont(buttonFont);
-        addHaveWatchedButton.setFont(buttonFont);
-        addWishlistButton.setPreferredSize(new Dimension(250, 40)); // Setting the size of the buttons
-        addHaveWatchedButton.setPreferredSize(new Dimension(250, 40));
-
-        // Adding the button and the text fields to the searchPanel
-        searchPanel.add(movieIdField);
-        searchPanel.add(searchButton);
-        searchPanel.add(movieTitleLabel);
-        searchPanel.add(movieReleaseDateLabel);
-        searchPanel.add(movieIDLabel);
-        searchPanel.add(movieRatingLabel);
-        searchPanel.add(movieAvailabilityLabel);
-        searchPanel.add(empty);
-        panel.add(searchPanel, BorderLayout.CENTER);  // Adding the search panel to the main panel
-
-        // Creating a back button for going back to the customer menu
-        JButton backButton = new JButton("Back");
-        backButton.setFont(buttonFont);
-        backButton.addActionListener(e -> customerMenu(customer));
-
-        searchButton.addActionListener(e -> {
-            // Search button that looks for a movie by id
-            String movieId = movieIdField.getText();
-            if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
-                int movieIDInt = Integer.parseInt(movieId);
-                Movie foundMovie = movieManager.getMoviesByID().searchMovieByID(movieIDInt);  // If so, looking for the movie
-                if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
-                    movieTitleLabel.setText("Title: " + foundMovie.getTitle());
-                    movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
-                    movieRatingLabel.setText("Rating: " + foundMovie.getScore());
-                    movieIDLabel.setText("ID: " + foundMovie.getID());
-                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
-                    searchPanel.add(addWishlistButton);  // Also show the buttons as options
-                    searchPanel.add(addHaveWatchedButton);
-
-                    addWishlistButton.addActionListener(e12 -> {
-                        // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
-                        customer.getWishlist().addMovie(foundMovie);
-                        saveLoadManager.saveWishlist(customer.getWishlist());
-                        saveLoadManager.saveCustomers(customers);
-                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
-                        accessMoviesByID(customer);
-                    });
-
-                    addHaveWatchedButton.addActionListener(e1 -> {
-                        // If the have watched button is clicked, add the movie and update the have watched
-                        customer.getWatchedList().insertMovie(foundMovie);
-                        saveLoadManager.saveHaveWatched(customer.getWatchedList());
-                        JOptionPane.showMessageDialog(panel, "Movie added to haveWatched");
-                    });
-                } else {
-                    // If the movie is not found
-                    JOptionPane.showMessageDialog(panel, "No Movie Found with the specific movie ID");
-                }
-            } else {
-                // If the input is invalid
-                JOptionPane.showMessageDialog(panel, "Please enter a valid movie ID (10000 - 99999)");
-            }
-        });
-
-        panel.add(backButton, BorderLayout.SOUTH);
-
-        // Updating the screen
         panel.revalidate();
         panel.repaint();
     }
@@ -640,12 +600,14 @@ public class ParkerFilmsGUI {
         // Create buttons for admin options
         JButton addMovieButton = new JButton("Add a new Movie");
         JButton leastRatedMovieButton = new JButton("View the least rated movie");
+        JButton accessMoviesByIDorDate = new JButton("Access Movies by ID or Date");
         JButton moviesByDateButton = new JButton("View the movies in order of release date");
         JButton returnToSeedButton = new JButton("Return to the Initial Seed of the Program");
         JButton goMainMenu = new JButton("Logout to the main menu");
 
         addMovieButton.setFont(buttonFont);
         leastRatedMovieButton.setFont(buttonFont);
+        accessMoviesByIDorDate.setFont(buttonFont);
         moviesByDateButton.setFont(buttonFont);
         returnToSeedButton.setFont(buttonFont);
         goMainMenu.setFont(buttonFont);
@@ -653,28 +615,25 @@ public class ParkerFilmsGUI {
         // Add buttons to panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(panel.getBackground());
-        buttonPanel.setLayout(new GridLayout(5, 1, 0, 15));
+        buttonPanel.setLayout(new GridLayout(6, 1, 0, 15));
         buttonPanel.add(addMovieButton);
         buttonPanel.add(leastRatedMovieButton);
         buttonPanel.add(moviesByDateButton);
+        buttonPanel.add(accessMoviesByIDorDate);
         buttonPanel.add(returnToSeedButton);
         buttonPanel.add(goMainMenu);
         panel.add(buttonPanel, BorderLayout.CENTER);
 
-        addMovieButton.addActionListener(e -> {
-            // Calls the function that handles adding a new movie to the system
-            addNewMovie();
-        });
+        // Calls the function that handles adding a new movie to the system
+        addMovieButton.addActionListener(e -> addNewMovie());
 
-        leastRatedMovieButton.addActionListener(e -> {
-            // Calls the function that removes the leastRatedMovie from the system
-            removeLeastRated();
-        });
+        // Calls the function that removes the leastRatedMovie from the system
+        leastRatedMovieButton.addActionListener(e -> removeLeastRated());
 
-        moviesByDateButton.addActionListener(e -> {
-            // Calls the function that will print the movies by release date
-            viewByReleaseDateAdmin();
-        });
+        // Calls the function that will print the movies by release date
+        moviesByDateButton.addActionListener(e -> viewByReleaseDateAdmin());
+
+        accessMoviesByIDorDate.addActionListener(e -> accessMoviesByIDorReleaseDateAdmin());
 
         returnToSeedButton.addActionListener(e -> {
             returnToSeed();
@@ -683,10 +642,8 @@ public class ParkerFilmsGUI {
             welcomeMenu();
         });
 
-        goMainMenu.addActionListener(e -> {
-            // Calls the function that will return to the main admin menu
-            loginMenu("Admin");
-        });
+        // Calls the function that will return to the main admin menu
+        goMainMenu.addActionListener(e -> loginMenu("Admin"));
 
         // Updating the screen
         panel.revalidate();
@@ -703,58 +660,53 @@ public class ParkerFilmsGUI {
         panel.add(loginTitleLabel, BorderLayout.NORTH); // Add the login title label to the top of the panel
 
         // Creating login panel for storing the login elements
-        JPanel loginPanel = new JPanel(new GridLayout(6, 1, 10, 5));
+        JPanel loginPanel = new JPanel(new GridLayout(5, 1, 10, 5));
         loginPanel.setBackground(panel.getBackground());  // Setting background to the parent's background
 
         // Setting up the input labels, text-fields and buttons
         JLabel movieNameLabel = new JLabel("Movie Name", JLabel.RIGHT);
         JLabel releaseDateLabel = new JLabel("Release Date", JLabel.RIGHT);
-        JLabel idLabel = new JLabel("ID", JLabel.RIGHT);
         JLabel ratingLabel = new JLabel("Rating", JLabel.RIGHT);
         JLabel availableLabel = new JLabel("Available (0/1)", JLabel.RIGHT);
         JTextField movieNameField = new JTextField();
         JTextField releaseDateField = new JTextField();
-        JTextField idField = new JTextField();
         JTextField ratingField = new JTextField();
         JTextField avaliableField = new JTextField();
-        JButton submitButton = new JButton("Submit");
-        JButton backButton = new JButton("Go Back");
+        JButton goBack = new JButton("Go Back");
+        JButton submit = new JButton("Submit");
         movieNameLabel.setFont(subTitleFont);  // Setting the fonts
         movieNameField.setFont(subTitleFont);
         releaseDateLabel.setFont(subTitleFont);
         releaseDateField.setFont(subTitleFont);
         ratingLabel.setFont(subTitleFont);
         ratingField.setFont(subTitleFont);
-        idLabel.setFont(subTitleFont);
-        idField.setFont(subTitleFont);
         availableLabel.setFont(subTitleFont);
         avaliableField.setFont(subTitleFont);
-        submitButton.setFont(buttonFont);
-        backButton.setFont(buttonFont);
+        goBack.setFont(buttonFont);
+        submit.setFont(buttonFont);
         Dimension buttonSize = new Dimension(200, 50);  // Setting button sizes
-        submitButton.setPreferredSize(buttonSize);
-        backButton.setPreferredSize(buttonSize);
+        goBack.setPreferredSize(buttonSize);
+        submit.setPreferredSize(buttonSize);
 
         panel.add(Box.createVerticalStrut(20), BorderLayout.CENTER); // Adding spacing
 
         // Adding buttons to a panel
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setBackground(panel.getBackground());
-        buttonPanel.add(submitButton);
+        buttonPanel.add(goBack);
         buttonPanel.add(Box.createHorizontalStrut(60));
-        buttonPanel.add(backButton);
+        buttonPanel.add(submit);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        submitButton.addActionListener(e -> {
+        submit.addActionListener(e -> {
             // If the submit button is clicked...
             String movieName = movieNameField.getText();  // Retrieve the data in the text fields
             String releaseDate = releaseDateField.getText();
-            String id = idField.getText();
             String rating = ratingField.getText();
             String available = avaliableField.getText();
-            if (newMovieValidation(movieName, releaseDate, id, rating, available)) {  // Perform validation
+            if (newMovieValidation(movieName, releaseDate, rating, available)) {  // Perform validation
                 int releaseDateNumeric = Integer.parseInt(releaseDateField.getText());
-                int idNumeric = Integer.parseInt(idField.getText());
+                int idNumeric = movieManager.getMoviesByDate().getCount() + 1;
                 int ratingNumeric = Integer.parseInt(ratingField.getText());
                 boolean availableBoolean = Integer.parseInt(avaliableField.getText()) == 1;
                 Movie newMovie = new Movie(movieName, releaseDateNumeric, idNumeric, ratingNumeric, availableBoolean);  // If valid, create a new movie
@@ -763,30 +715,23 @@ public class ParkerFilmsGUI {
                 JOptionPane.showMessageDialog(panel, movieName + " added successfully");  // Print a message to the screen
                 adminMenu();  // Return to the admin menu
             } else {  // If validation is failed, print a message to the screen and list the rules.
-                JOptionPane.showMessageDialog(panel, "Invalid Input!\n" +
-                        "Please be sure that all of the fields are filled.\n" +
-                        "Release Date is in the valid range of (10000101-99999999)\n" +
-                        "ID is in the valid range of 10000-99999\n" +
-                        "Rating is in the valid range of 0-100\n" +
-                        "And availability is 0 or 1");
+                JOptionPane.showMessageDialog(panel, "Invalid Input!\n" + "Please be sure that all of the fields are filled.\n" + "Release Date is in the valid range of (10000101-99999999)\n" + "ID is in the valid range of 10000-99999\n" + "Rating is in the valid range of 0-100\n" + "And availability is 0 or 1");
             }
         });
 
-        backButton.addActionListener(e -> adminMenu());  // If the back button is clicked, return to the admin menu
+        goBack.addActionListener(e -> adminMenu());  // If the back button is clicked, return to the admin menu
 
         // Add the elements to the login panel
         loginPanel.add(movieNameLabel);
         loginPanel.add(movieNameField);
         loginPanel.add(releaseDateLabel);
         loginPanel.add(releaseDateField);
-        loginPanel.add(idLabel);
-        loginPanel.add(idField);
         loginPanel.add(ratingLabel);
         loginPanel.add(ratingField);
         loginPanel.add(availableLabel);
         loginPanel.add(avaliableField);
-        loginPanel.add(submitButton);
-        loginPanel.add(backButton);
+        loginPanel.add(goBack);
+        loginPanel.add(submit);
 
         // Adding the login panel to the screen
         panel.add(loginPanel, BorderLayout.CENTER);
@@ -854,16 +799,25 @@ public class ParkerFilmsGUI {
             // Action listener for removeButton
             removeButton.addActionListener(e -> {
                 // If the user choose to remove the least rated movie
+
+                System.out.println("Heap");
+                System.out.println(leastRated);
+                System.out.println("Movies by ID");
+                System.out.println(moviesByID.searchMovieByID(leastRated.getID()));
+                System.out.println("Movies by Date");
+                System.out.println(moviesByDate.searchMovieByDate(leastRated.getReleaseDate()));
+
                 leastRated.setAvailability(false);  // Set the availability to false
                 movieManager.deleteMinScoreMovie();  // Delete the min rated movie
                 saveLoadManager.saveMovies(movieManager);  // Update the save/load
                 saveLoadManager.saveCustomers(customers);
                 saveLoadManager.saveWishlist(wishlist);
-                ///
-                System.out.println(leastRated);
+
+
                 Customer customer = customers.lookUpCustomer(1000);
                 Wishlist wlist = customer.getWishlist();
                 System.out.println(wlist.getFirstMovie());
+
 
                 JOptionPane.showMessageDialog(panel, "Least Rated Movie has been removed successfully.");
                 removeLeastRated();  // Return to the screen again to update
@@ -901,24 +855,23 @@ public class ParkerFilmsGUI {
     }
 
     private void viewByReleaseDateAdmin() {
-        // Admin function to view the movies by releaseDate
+        // Function to print the movies by release date on the screen
         panel.removeAll();  // Clearing the screen
 
-        // Setting the window title
+        // Adding the title label
         JLabel titleLabel = new JLabel("Movies by Release Date", JLabel.CENTER);
         titleLabel.setFont(titleFont);
         panel.add(titleLabel, BorderLayout.NORTH);
 
-        // Creating a table model
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel();
-        tableModel.addColumn("Movie Name");  // Column names
+        tableModel.addColumn("Movie Name");
         tableModel.addColumn("Release Date");
         tableModel.addColumn("ID");
         tableModel.addColumn("Score");
         tableModel.addColumn("Availability");
 
-        // Saving the nodes into the tableModel by the special in-order traversal
-        printAscendingDate(movieManager.getMoviesByDate(), tableModel);
+        printAscendingDate(movieManager.getMoviesByDate(), tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
 
         // Creating the table
         JTable table = new JTable(tableModel) {
@@ -938,24 +891,244 @@ public class ParkerFilmsGUI {
         columnModel.getColumn(3).setPreferredWidth(50);
         columnModel.getColumn(4).setPreferredWidth(50);
 
-        // Adding a scroll pane to the screen
+        // Adding a scrollPane to the table
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setPreferredSize(new Dimension(500, 300));
+        scrollPane.setPreferredSize(new Dimension(500, 300)); // Set a fixed size
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Setting up the back button
+        // Panel for buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(panel.getBackground());
+
+        // Back button
         JButton backButton = new JButton("Back");
         backButton.setFont(buttonFont);
-        backButton.addActionListener(e -> adminMenu()); // If back button is clicked, go back to the adminMenu
-        panel.add(backButton, BorderLayout.SOUTH);
+        backButton.addActionListener(e -> adminMenu());
+        buttonPanel.add(backButton);
 
-        // Updating the screen
+        // Adding buttons for wishlist and watched
+        JButton setAsAvaliableButton = new JButton("Set As Avaliable");
+        setAsAvaliableButton.setFont(buttonFont);
+        setAsAvaliableButton.setVisible(false);
+        buttonPanel.add(setAsAvaliableButton);
+
+        JButton setAsUnavaliableButton = new JButton("Set as Unavaliable");
+        setAsUnavaliableButton.setFont(buttonFont);
+        setAsUnavaliableButton.setVisible(false);
+        buttonPanel.add(setAsUnavaliableButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+
+        ListSelectionModel selectionModel = table.getSelectionModel();  // When a row is selected
+
+        selectionModel.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // Clear all action listeners from the buttons
+                for (ActionListener listener : setAsAvaliableButton.getActionListeners()) {
+                    setAsAvaliableButton.removeActionListener(listener);
+                }
+                for (ActionListener listener : setAsUnavaliableButton.getActionListeners()) {
+                    setAsUnavaliableButton.removeActionListener(listener);
+                }
+
+                if (table.getSelectedRow() != -1) {
+                    Object id = table.getValueAt(table.getSelectedRow(), 2); // Getting the id of the selected row (ID of the movie)
+                    Movie movieToModify = moviesByID.searchMovieByID((Integer) id);
+
+                    if (movieToModify.getAvailability()) {
+                        setAsUnavaliableButton.setVisible(true);
+                        setAsAvaliableButton.setVisible(false);
+                        setAsUnavaliableButton.addActionListener(e2 -> {
+                            movieToModify.setAvailability(false);
+                            saveLoadManager.saveMovies(movieManager);
+                            saveLoadManager.saveCustomers(customers);
+                            saveLoadManager.saveWishlist(wishlist);
+                            table.clearSelection();
+                            JOptionPane.showMessageDialog(panel, movieToModify.getTitle()  + " Set to unavailable");
+                            viewByReleaseDateAdmin();
+                        });
+                    } else {
+                        setAsAvaliableButton.setVisible(true);
+                        setAsUnavaliableButton.setVisible(false);
+                        setAsAvaliableButton.addActionListener(e2 -> {
+                            movieToModify.setAvailability(true);
+                            saveLoadManager.saveMovies(movieManager);
+                            saveLoadManager.saveCustomers(customers);
+                            saveLoadManager.saveWishlist(wishlist);
+                            table.clearSelection();
+                            JOptionPane.showMessageDialog(panel, movieToModify.getTitle()  + " Set to available");
+                            viewByReleaseDateAdmin();
+                        });
+                    }
+                } else {
+                    setAsAvaliableButton.setVisible(false);  // Don't show the option buttons if nothing is selected
+                    setAsUnavaliableButton.setVisible(false);
+                }
+            }
+        });
+
+
+        // Refreshing the window
         panel.revalidate();
         panel.repaint();
     }
 
-    private void setPanel(JPanel panel) {
-        this.panel = panel;
+    private void accessMoviesByIDorReleaseDateAdmin() {
+        panel.removeAll();  // Clearing the screen
+
+        // Title label
+        JLabel titleLabel = new JLabel("Access Movies By ID or Release Date", JLabel.CENTER);
+        titleLabel.setFont(boldSubTitleFont);
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        // Search Panel for saving the input field, button and text fields
+        JPanel searchPanel = new JPanel(new GridLayout(7, 2, 20, 0));
+        searchPanel.setBackground(panel.getBackground());
+
+        // Text-field for entering the movieID
+        JTextField movieIdField = new JTextField(10);
+        movieIdField.setFont(textFont);
+
+        JTextField movieDateField = new JTextField(10);
+        movieDateField.setFont(textFont);
+
+        // Setting up the search button and movie labels
+        JButton searchButtonID = new JButton("Search Movie by ID");
+        JButton searchButtonDate = new JButton("Search Movie by Date");
+        JLabel movieTitleLabel = new JLabel("Title: ");
+        JLabel movieReleaseDateLabel = new JLabel("Release Date: ");
+        JLabel movieIDLabel = new JLabel("ID: ");
+        JLabel movieRatingLabel = new JLabel("Rating: ");
+        JLabel movieAvailabilityLabel = new JLabel("Availability: ");
+        JLabel empty = new JLabel("");
+
+        searchButtonID.setFont(boldTextFont);  // Setting the font
+        searchButtonDate.setFont(boldTextFont);
+        movieTitleLabel.setFont(boldTextFont);
+        movieReleaseDateLabel.setFont(boldTextFont);
+        movieIDLabel.setFont(boldTextFont);
+        movieRatingLabel.setFont(boldTextFont);
+        movieAvailabilityLabel.setFont(boldTextFont);
+
+
+        // Adding the button and the text fields to the searchPanel
+        searchPanel.add(movieIdField);
+        searchPanel.add(searchButtonID);
+        searchPanel.add(movieDateField);
+        searchPanel.add(searchButtonDate);
+        searchPanel.add(movieTitleLabel);
+        searchPanel.add(movieReleaseDateLabel);
+        searchPanel.add(movieIDLabel);
+        searchPanel.add(movieRatingLabel);
+        searchPanel.add(movieAvailabilityLabel);
+        searchPanel.add(empty);
+        panel.add(searchPanel, BorderLayout.CENTER);  // Adding the search panel to the main panel
+
+        // Panel for buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(panel.getBackground());
+
+
+        // Creating a back button for going back to the customer menu
+        JButton backButton = new JButton("Back");
+        backButton.setFont(buttonFont);
+        backButton.addActionListener(e -> adminMenu());
+        buttonPanel.add(backButton);
+
+        // Creating a back button for going back to the customer menu
+        JButton setAsUnavailableButton = new JButton("Set as Unavailable");
+        setAsUnavailableButton.setFont(buttonFont);
+        setAsUnavailableButton.setVisible(false);
+        buttonPanel.add(setAsUnavailableButton);
+
+        searchButtonID.addActionListener(e -> {
+            // Search button that looks for a movie by id
+            String movieId = movieIdField.getText();
+            movieDateField.setText("");
+            movieIdField.setText("");
+            if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
+                int movieIDInt = Integer.parseInt(movieId);
+                Movie foundMovie = movieManager.getMoviesByID().searchMovieByID(movieIDInt);  // If so, looking for the movie
+                if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
+                    movieTitleLabel.setText("Title: " + foundMovie.getTitle());
+                    movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
+                    movieRatingLabel.setText("Rating: " + foundMovie.getScore());
+                    movieIDLabel.setText("ID: " + foundMovie.getID());
+                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+
+                    if (foundMovie.getAvailability()) {
+                        setAsUnavailableButton.setVisible(true);
+                    }
+
+                    setAsUnavailableButton.addActionListener(e1 -> {
+                        foundMovie.setAvailability(false);
+                        movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                        saveLoadManager.saveMovies(movieManager);
+                        saveLoadManager.saveCustomers(customers);
+                        saveLoadManager.saveWishlist(wishlist);
+                        JOptionPane.showMessageDialog(panel, "Movie Set to unavailable");
+                        accessMoviesByIDorReleaseDateAdmin();
+                    });
+
+
+                } else {
+                    // If the movie is not found
+                    JOptionPane.showMessageDialog(panel, "No Movie Found with the specific movie ID");
+                }
+            } else {
+                // If the input is invalid
+                JOptionPane.showMessageDialog(panel, "Please enter a valid movie ID (10000 - 99999)");
+            }
+        });
+
+        searchButtonDate.addActionListener(e -> {
+            // Search button that looks for a movie by id
+            String movieDate = movieDateField.getText();
+            movieDateField.setText("");
+            movieIdField.setText("");
+
+            if (intValidation(movieDate, 10000101, 99999999)) {  // Checking if the input is a valid integer in the range
+                int movieIDInt = Integer.parseInt(movieDate);
+                Movie foundMovie = movieManager.getMoviesByDate().searchMovieByDate(movieIDInt);  // If so, looking for the movie
+                if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
+                    movieTitleLabel.setText("Title: " + foundMovie.getTitle());
+                    movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
+                    movieRatingLabel.setText("Rating: " + foundMovie.getScore());
+                    movieIDLabel.setText("ID: " + foundMovie.getID());
+                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+
+                    if (foundMovie.getAvailability()) {
+                        setAsUnavailableButton.setVisible(true);
+                    }
+
+                    setAsUnavailableButton.addActionListener(e1 -> {
+                        foundMovie.setAvailability(false);
+                        movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                        saveLoadManager.saveMovies(movieManager);
+                        saveLoadManager.saveCustomers(customers);
+                        saveLoadManager.saveWishlist(wishlist);
+                        JOptionPane.showMessageDialog(panel, "Movie Set to unavailable");
+                        accessMoviesByIDorReleaseDateAdmin();
+                    });
+
+                } else {
+                    // If the movie is not found
+                    JOptionPane.showMessageDialog(panel, "No Movie Found with the specific release Date");
+                }
+            } else {
+                // If the input is invalid
+                JOptionPane.showMessageDialog(panel, "Please enter a valid Release Date (YYYYMMDD)");
+            }
+        });
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Updating the screen
+        panel.revalidate();
+        panel.repaint();
     }
 
     private void returnToSeed() {
@@ -969,6 +1142,102 @@ public class ParkerFilmsGUI {
         ImportManager importManager = new ImportManager(movieManager, customers);
         importManager.importAllData();
         saveLoadManager.saveAllData(customers, wishlist, haveWatched, movieScoresHeap, moviesByID, moviesByDate);
+    }
+
+    private void newCustomerMenu() {
+        // Function to create a new customer in our program
+        panel.removeAll();  // Clear the panel
+
+        // Main title of the page
+        JLabel loginTitleLabel = new JLabel("New Customer Creation", JLabel.CENTER);
+        loginTitleLabel.setFont(titleFont);
+        panel.add(loginTitleLabel, BorderLayout.NORTH);
+
+
+        JPanel loginPanel = new JPanel(new GridLayout(5, 1, 20, 20));
+        loginPanel.setBackground(panel.getBackground());  // Getting the background color of the main panel
+
+        // Creating labels and text-fields for our program
+        JLabel nameLabel = new JLabel("Name Surname", JLabel.RIGHT);
+        JLabel emailLabel = new JLabel("Email Address", JLabel.RIGHT);
+        JLabel creditLabel = new JLabel("Credit Card Number", JLabel.RIGHT);
+        JLabel passwordLabel = new JLabel("Password", JLabel.RIGHT);
+        JTextField nameField = new JTextField();
+        JTextField emailField = new JTextField();
+        JTextField creditField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JButton submitButton = new JButton("Submit");
+        JButton backButton = new JButton("Go Back");
+        nameLabel.setFont(boldTextFont);
+        nameField.setFont(textFont);
+        emailLabel.setFont(boldTextFont);
+        emailField.setFont(textFont);
+        creditLabel.setFont(boldTextFont);
+        creditField.setFont(textFont);
+        passwordLabel.setFont(boldTextFont);
+        passwordField.setFont(textFont);
+        submitButton.setFont(buttonFont);
+        backButton.setFont(buttonFont);
+        Dimension buttonSize = new Dimension(150, 50);  // Setting button size
+        submitButton.setPreferredSize(buttonSize);
+        backButton.setPreferredSize(buttonSize);
+
+        panel.add(Box.createVerticalStrut(20), BorderLayout.CENTER);  // Setting spacing
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());  // Button panel for storing the buttons
+        buttonPanel.setBackground(panel.getBackground());
+        buttonPanel.add(submitButton);
+        buttonPanel.add(Box.createHorizontalStrut(60));
+        buttonPanel.add(backButton);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Adding the fileds on the panel and adding the panel to the screen
+        loginPanel.add(nameLabel);
+        loginPanel.add(nameField);
+        loginPanel.add(emailLabel);
+        loginPanel.add(emailField);
+        loginPanel.add(creditLabel);
+        loginPanel.add(creditField);
+        loginPanel.add(passwordLabel);
+        loginPanel.add(passwordField);
+        loginPanel.add(backButton);
+        loginPanel.add(submitButton);
+        panel.add(loginPanel, BorderLayout.CENTER);
+
+        submitButton.addActionListener(e -> {
+            // When submit button is clicked...
+            // Getting the text in the fields
+            String username = nameField.getText();
+            String email = emailField.getText();
+            String credit = creditField.getText();
+            String password = new String(passwordField.getPassword());
+
+            // Validating the input of the customer
+            boolean valid = newCustomerValidation(username, email, credit, password);
+            if (valid) {  // If it's valid, creates a new customer, shows a message and moves to the login menu
+                Customer customer = new Customer(username, email, Integer.parseInt(credit), new Wishlist(), password);
+                customers.insertCustomer(customer);
+                saveLoadManager.saveCustomers(customers);
+                JOptionPane.showMessageDialog(panel, "Customer successfully created");
+                loginMenu("Customer");
+            } else {  // if it's not valid, shows another message
+                JOptionPane.showMessageDialog(panel, "Invalid credentials.\nCheck that you entered a valid email and your credit card is a 4 digit integer.\nAlso be sure that you filled all of the fields.");
+            }
+        });
+
+        backButton.addActionListener(e -> {
+            // If the back button is clicked, removes everything and returns to the welcome menu.
+            panel.removeAll();
+            welcomeMenu();
+        });
+
+        // Update the panel
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void setPanel(JPanel panel) {
+        this.panel = panel;
     }
 
     private static boolean adminValidation(String username, String password) {
@@ -1014,10 +1283,10 @@ public class ParkerFilmsGUI {
         return email.contains("@") && !email.startsWith("@") && !email.endsWith("@") && !email.contains("@.") && (email.endsWith(".com") || email.endsWith(".edu") || email.endsWith(".gov") || email.endsWith(".org") || email.endsWith(".net") || email.endsWith(".info") || email.endsWith(".biz"));
     }
 
-    private static boolean newMovieValidation(String movieName, String releaseDate, String ID, String rating, String available) {
+    private static boolean newMovieValidation(String movieName, String releaseDate, String rating, String available) {
         // Performing validation in the new movie creation process.
         // Checks if the name field is not empty and the other fields are integers in the valid range
-        return !movieName.isEmpty() && intValidation(releaseDate, 10000101, 99999999) && intValidation(ID, 10000, 99999) && intValidation(rating, 0, 100) && intValidation(available, 0, 1);
+        return !movieName.isEmpty() && intValidation(releaseDate, 10000101, 99999999) && intValidation(rating, 0, 100) && intValidation(available, 0, 1);
     }
 
     private static void printAscendingDate(MoviesByDate DateBST, DefaultTableModel tableModel) {

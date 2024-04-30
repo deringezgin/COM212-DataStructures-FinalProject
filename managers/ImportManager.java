@@ -22,7 +22,7 @@ public class ImportManager {
             while (input.hasNext()) {
                 String title = input.next().trim();
                 int releaseDate = Integer.parseInt(input.next().trim());
-                int id = Integer.parseInt(input.next().trim());
+                int id = movieManager.getMoviesByDate().getCount() + 1;
                 int score = Integer.parseInt(input.next().trim());
                 boolean availability = Integer.parseInt(input.next().trim()) == 1;
                 Movie movie = new Movie(title, releaseDate, id, score, availability);

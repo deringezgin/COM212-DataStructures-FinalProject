@@ -114,6 +114,41 @@ public class SaveLoadManager implements Serializable {
         return haveWatched;
     }
 
+    public void saveMovieManager(MovieManager movieManager) {
+        // Customer that saves the wishlist queue to the wishlist.ser file
+        try {
+            FileOutputStream file = new FileOutputStream("data/moviemanager.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(movieManager);
+            out.close();
+            file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public MovieManager loadMovieManager() {
+        // Function that loads the wishlist queue from the wishlist.ser file
+        MovieManager movieManager = null;
+        try {
+            File file = new File("data/moviemanager.ser");
+            boolean fileCreated = file.createNewFile();
+            FileInputStream fileInput = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fileInput);
+            movieManager = (MovieManager) in.readObject();
+        } catch (FileNotFoundException e) {
+            System.out.println("data/moviemanager.ser file is not found");
+        } catch (EOFException e) {
+            System.out.println("data/moviemanager.ser is Empty");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return movieManager;
+    }
+
+
     public void saveMovieScoresHeap(MovieScoresHeap movieScoresHeap) {
         // Function that saves the movie scores heap to the movieScoresHeap.ser file
         try {

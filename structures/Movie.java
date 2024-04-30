@@ -161,14 +161,15 @@ public class Movie implements Serializable {
         return monthString + " " + day + ", " + year;
     }
 
-    @Override
-    public String toString() {
-        // Function to print the movie
-        return "\nMOVIE DETAILS" +
-                "\nTitle of the movie: " + this.title +
-                "\nRelease Date: " + convertToDate() +
-                "\nID of the movie: " + this.ID +
-                "\nScore of the movie: " + this.score +
-                "\nAvailability: " + this.availability;
-    }
+//    @Overrides
+//    public String toString() {
+//        // Function to print the movie
+//        return "\nMOVIE DETAILS" +
+//                "\nTitle of the movie: " + this.title +
+//                "\nRelease Date: " + convertToDate() +
+//                "\nID of the movie: " + this.ID +
+//                "\nScore of the movie: " + this.score +
+//                "\nAvailability: " + this.availability +
+//                "\nAddress: " + this;
+//    }
 }
