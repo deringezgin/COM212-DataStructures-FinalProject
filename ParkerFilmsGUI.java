@@ -7,7 +7,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 
-public class parkerFilmsGUI {
+public class ParkerFilmsGUI {
     private static final Font titleFont = new Font("Verdana", Font.BOLD, 40);
     private static final Font textFont = new Font("Verdana", Font.PLAIN, 20);
     private static final Font boldTextFont = new Font("Verdana", Font.BOLD, 20);
@@ -24,7 +24,7 @@ public class parkerFilmsGUI {
     private MovieManager movieManager;
     private JPanel panel;
 
-    public parkerFilmsGUI() {
+    public ParkerFilmsGUI() {
         // Loading data
         this.saveLoadManager = new SaveLoadManager();
         this.customers = saveLoadManager.loadCustomers();
@@ -1007,7 +1007,7 @@ public class parkerFilmsGUI {
     }
 
     public static void main(String[] args) {
-        parkerFilmsGUI filmManager = new parkerFilmsGUI();
+        ParkerFilmsGUI filmManager = new ParkerFilmsGUI();
         // Creating the window
         JFrame frame = new JFrame("Custom Window");
         frame.setSize(800, 600);
