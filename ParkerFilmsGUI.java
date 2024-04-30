@@ -472,18 +472,18 @@ public class ParkerFilmsGUI {
 
         // Back button
         JButton backButton = new JButton("Back");
-        backButton.setFont(textFont);
+        backButton.setFont(buttonFont);
         backButton.addActionListener(e -> customerMenu(customer));
         buttonPanel.add(backButton);
 
         // Adding buttons for wishlist and watched
         JButton addToWishlistButton = new JButton("Add to Wishlist");
-        addToWishlistButton.setFont(textFont);
+        addToWishlistButton.setFont(buttonFont);
         addToWishlistButton.setVisible(false);
         buttonPanel.add(addToWishlistButton);
 
         JButton addToWatchedButton = new JButton("Add to Watched");
-        addToWatchedButton.setFont(textFont);
+        addToWatchedButton.setFont(buttonFont);
         addToWatchedButton.setVisible(false);
         buttonPanel.add(addToWatchedButton);
 
