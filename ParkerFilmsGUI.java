@@ -1,3 +1,4 @@
+import managers.ImportManager;
 import managers.MovieManager;
 import managers.SaveLoadManager;
 import structures.*;
@@ -502,12 +503,18 @@ public class ParkerFilmsGUI {
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
                         customer.getWatchedList().insertMovie(movieToAdd);
                         JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Have Watched.");
+                        saveLoadManager.saveHaveWatched(customer.getWatchedList());
+                        saveLoadManager.saveCustomers(customers);
+                        viewByReleaseDateCustomer(customer);
                     });
 
                     addToWishlistButton.addActionListener(e2 -> {  // Adding the selected movie to the wishlist by id
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
                         customer.getWishlist().addMovie(movieToAdd);
                         JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Wishlist.");
+                        saveLoadManager.saveWishlist(customer.getWishlist());
+                        saveLoadManager.saveCustomers(customers);
+                        viewByReleaseDateCustomer(customer);
                     });
                 } else {
                     addToWishlistButton.setVisible(false);  // Don't show the option buttons if nothing is selected
@@ -634,20 +641,23 @@ public class ParkerFilmsGUI {
         JButton addMovieButton = new JButton("Add a new Movie");
         JButton leastRatedMovieButton = new JButton("View the least rated movie");
         JButton moviesByDateButton = new JButton("View the movies in order of release date");
+        JButton returnToSeedButton = new JButton("Return to the Initial Seed of the Program");
         JButton goMainMenu = new JButton("Logout to the main menu");
 
         addMovieButton.setFont(buttonFont);
         leastRatedMovieButton.setFont(buttonFont);
         moviesByDateButton.setFont(buttonFont);
+        returnToSeedButton.setFont(buttonFont);
         goMainMenu.setFont(buttonFont);
 
         // Add buttons to panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(panel.getBackground());
-        buttonPanel.setLayout(new GridLayout(4, 1, 0, 15));
+        buttonPanel.setLayout(new GridLayout(5, 1, 0, 15));
         buttonPanel.add(addMovieButton);
         buttonPanel.add(leastRatedMovieButton);
         buttonPanel.add(moviesByDateButton);
+        buttonPanel.add(returnToSeedButton);
         buttonPanel.add(goMainMenu);
         panel.add(buttonPanel, BorderLayout.CENTER);
 
@@ -664,6 +674,13 @@ public class ParkerFilmsGUI {
         moviesByDateButton.addActionListener(e -> {
             // Calls the function that will print the movies by release date
             viewByReleaseDateAdmin();
+        });
+
+        returnToSeedButton.addActionListener(e -> {
+            returnToSeed();
+            JOptionPane.showMessageDialog(panel, "Program is reset to the seed");
+            panel.removeAll();
+            welcomeMenu();
         });
 
         goMainMenu.addActionListener(e -> {
@@ -941,6 +958,19 @@ public class ParkerFilmsGUI {
         this.panel = panel;
     }
 
+    private void returnToSeed() {
+        saveLoadManager.clearAllData();
+        customers = saveLoadManager.loadCustomers();
+        wishlist = saveLoadManager.loadWishlist();
+        movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
+        moviesByID = saveLoadManager.loadMoviesByID();
+        moviesByDate = saveLoadManager.loadMoviesByDate();
+        movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
+        ImportManager importManager = new ImportManager(movieManager, customers);
+        importManager.importAllData();
+        saveLoadManager.saveAllData(customers, wishlist, haveWatched, movieScoresHeap, moviesByID, moviesByDate);
+    }
+
     private static boolean adminValidation(String username, String password) {
         return username.equals("admin") && password.equals("admin");
     }
@@ -1008,6 +1038,7 @@ public class ParkerFilmsGUI {
 
     public static void main(String[] args) {
         ParkerFilmsGUI filmManager = new ParkerFilmsGUI();
+
         // Creating the window
         JFrame frame = new JFrame("Custom Window");
         frame.setSize(800, 600);
