@@ -1027,6 +1027,7 @@ public class ParkerFilmsGUI {
     private void welcomeMenu() {
         // Main menu of our program that has 3 options: Customer login - Admin Login and New Customer Creation
         // Title of the welcome menu
+        nodeChecker(movieManager);
         JLabel titleLabel = new JLabel("Parker Films", JLabel.CENTER);
         titleLabel.setFont(new Font("Verdana", Font.BOLD, 60));
         panel.add(titleLabel, BorderLayout.CENTER); // Add the title label to the center of the panel
@@ -1324,6 +1325,15 @@ public class ParkerFilmsGUI {
             tableModel.addRow(rowData);
             ascend(currentMovie.getLeftDateMovie(), tableModel);
         }
+    }
+
+    private static void nodeChecker(MovieManager movieManager) {
+        System.out.println("NODE CHECKER");
+        System.out.println("CURRENTLY LEAST RATED NODE");
+        Movie leastRated = movieManager.getLeastRatedMovie();
+        System.out.println(leastRated);
+        System.out.println(movieManager.getMoviesByDate().searchMovieByDate(leastRated.getReleaseDate()));
+        System.out.println(movieManager.getMoviesByID().searchMovieByID(leastRated.getID()));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
