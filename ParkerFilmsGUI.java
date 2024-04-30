@@ -175,6 +175,7 @@ public class ParkerFilmsGUI {
         panel.repaint();
     }
 
+    //////////////////// CUSTOMER SIDE OF THE PROGAM //////////////////////////////////////////////////////////////////
     private void customerMenu(Customer customer) {
         // Customer menu that has the different options for the customer
         panel.removeAll();  // Clear the screen
@@ -552,6 +553,14 @@ public class ParkerFilmsGUI {
         ListSelectionModel selectionModel = table.getSelectionModel();  // When a row is selected
         selectionModel.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
+                // Clear all action listeners from the buttons
+                for (ActionListener listener : addToWatchedButton.getActionListeners()) {
+                    addToWatchedButton.removeActionListener(listener);
+                }
+                for (ActionListener listener : addToWishlistButton.getActionListeners()) {
+                    addToWishlistButton.removeActionListener(listener);
+                }
+
                 if (table.getSelectedRow() != -1) {
                     addToWishlistButton.setVisible(true);  // Show the option buttons
                     addToWatchedButton.setVisible(true);
@@ -588,6 +597,9 @@ public class ParkerFilmsGUI {
         panel.repaint();
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //////////////////// ADMIN SIDE OF THE PROGRAM ////////////////////////////////////////////////////////////////////
     private void adminMenu() {
         // Creating the admin menu
         panel.removeAll();  // Clearing the screen
@@ -946,7 +958,7 @@ public class ParkerFilmsGUI {
                             saveLoadManager.saveCustomers(customers);
                             saveLoadManager.saveWishlist(wishlist);
                             table.clearSelection();
-                            JOptionPane.showMessageDialog(panel, movieToModify.getTitle()  + " Set to unavailable");
+                            JOptionPane.showMessageDialog(panel, movieToModify.getTitle() + " Set to unavailable");
                             viewByReleaseDateAdmin();
                         });
                     } else {
@@ -958,7 +970,7 @@ public class ParkerFilmsGUI {
                             saveLoadManager.saveCustomers(customers);
                             saveLoadManager.saveWishlist(wishlist);
                             table.clearSelection();
-                            JOptionPane.showMessageDialog(panel, movieToModify.getTitle()  + " Set to available");
+                            JOptionPane.showMessageDialog(panel, movieToModify.getTitle() + " Set to available");
                             viewByReleaseDateAdmin();
                         });
                     }
@@ -1143,6 +1155,8 @@ public class ParkerFilmsGUI {
         importManager.importAllData();
         saveLoadManager.saveAllData(customers, wishlist, haveWatched, movieScoresHeap, moviesByID, moviesByDate);
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void newCustomerMenu() {
         // Function to create a new customer in our program
