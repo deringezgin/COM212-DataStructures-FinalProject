@@ -294,9 +294,10 @@ public class ParkerFilmsGUI implements Serializable {
                 buttonPanel.setBackground(panel.getBackground());
                 panel.add(buttonPanel, BorderLayout.SOUTH);
             } else {
+                panel.removeAll();
                 customer.getWishlist().deleteFirstMovie();
                 saveData();
-                JOptionPane.showMessageDialog(panel, firstMovie.getTitle() + "Sorry the movie is not available.\nIt'll be removed from the system.");
+                JOptionPane.showMessageDialog(panel, firstMovie.getTitle() + " is not available.\nIt'll be removed from the system.");
                 accessWishlist(customer);
             }
 
@@ -993,23 +994,28 @@ public class ParkerFilmsGUI implements Serializable {
         JButton customerLoginButton = new JButton("Customer");
         JButton adminLoginButton = new JButton("Admin");
         JButton newCustomerButton = new JButton("New Customer");
-        Font mainButtonFont = new Font("Verdana", Font.BOLD, 20);
-        customerLoginButton.setFont(mainButtonFont);
-        adminLoginButton.setFont(mainButtonFont);
-        newCustomerButton.setFont(mainButtonFont);
-        Dimension buttonSize = new Dimension(200, 70);
+        JButton quitButton = new JButton("Quit");
+        customerLoginButton.setFont(buttonFont);
+        adminLoginButton.setFont(buttonFont);
+        newCustomerButton.setFont(buttonFont);
+        quitButton.setFont(buttonFont);
+        Dimension buttonSize = new Dimension(175, 70);
         customerLoginButton.setPreferredSize(buttonSize);
         adminLoginButton.setPreferredSize(buttonSize);
         newCustomerButton.setPreferredSize(buttonSize);
+        quitButton.setPreferredSize(buttonSize);
 
         // Spacing between the elements
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setBackground(panel.getBackground());  // Matching the background color
         buttonPanel.add(customerLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));  // Adding space between buttons
+        buttonPanel.add(Box.createHorizontalStrut(5));  // Adding space between buttons
         buttonPanel.add(adminLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));  // Adding space between buttons
+        buttonPanel.add(Box.createHorizontalStrut(5));  // Adding space between buttons
         buttonPanel.add(newCustomerButton);
+        buttonPanel.add(Box.createHorizontalStrut(5));  // Adding space between buttons
+        buttonPanel.add(quitButton);
+
         panel.add(buttonPanel, BorderLayout.SOUTH);  // Adding the button panel to the bottom of the panel
 
         // If the customer login button is clicked, create a login menu in the customer version
@@ -1020,6 +1026,14 @@ public class ParkerFilmsGUI implements Serializable {
 
         // If the new customer button is clicked, go to the sign-up page
         newCustomerButton.addActionListener(e -> newCustomerMenu());
+
+        quitButton.addActionListener(e -> {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(panel);
+            frame.dispose();
+
+            System.exit(0);
+        });
+
 
         // Updating the screen
         panel.revalidate();
@@ -1288,7 +1302,7 @@ public class ParkerFilmsGUI implements Serializable {
         // Recursive ascend function which will append the elements of the movie into an object and append it to the table
         if (currentMovie != null) {
             ascendCustomer(currentMovie.getRightDateMovie(), tableModel);
-            if(currentMovie.getAvailability()) {
+            if (currentMovie.getAvailability()) {
                 Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
                 tableModel.addRow(rowData);
             }
@@ -1318,64 +1332,16 @@ public class ParkerFilmsGUI implements Serializable {
     ////////////////// SAVE - LOAD FUNCTIONS //////////////////////////////////////////////////////////////////////////
 
     private void saveData() {
-        saveMovieData();
-        saveCustomers();
-    }
-
-    private void loadData() {
-        loadMovieData();
-        loadCustomers();
-    }
-
-    private void saveCustomers() {
-        // Function that save the customer storage dictionary to the customers.ser file
         try {
-            System.out.println("Saving customers...");
-            FileOutputStream file = new FileOutputStream("data/customerData.ser");
-            ObjectOutputStream out = new ObjectOutputStream(file);
-            out.writeObject(this.customers);
-            out.close();
-            file.close();
-            System.out.println("Customers are successfully saved to the data/customerData.ser");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadCustomers() {
-        // Function that reads the dictionary that stores the customers from the customers.ser file
-        try {
-            System.out.println("Loading data/customerData.ser...");
-            File file = new File("data/customerData.ser");
-            boolean fileCreated = file.createNewFile();
-            FileInputStream fileInput = new FileInputStream(file);
-            ObjectInputStream in = new ObjectInputStream(fileInput);
-            this.customers = (CustomerStorage) in.readObject();
-            fileInput.close();
-            in.close();
-            System.out.println("Customers are successfully loaded from the data/customers.ser");
-        } catch (FileNotFoundException e) {
-            System.out.println("data/customerData.ser file is not found");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Class not found");
-        } catch (EOFException e) {
-            System.out.println("data/customerData.ser is Empty");
-            this.customers = new CustomerStorage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveMovieData() {
-        try {
-            System.out.println("Saving movie data into the structures...");
-            FileOutputStream file = new FileOutputStream("data/movieData.ser");
+            System.out.println("Saving data into the structures...");
+            FileOutputStream file = new FileOutputStream("data/programData.ser");
             ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(this.moviesByID);
             out.writeObject(this.moviesByDate);
             out.writeObject(this.movieScoresHeap);
             out.writeObject(this.wishlist);
             out.writeObject(this.haveWatched);
+            out.writeObject(this.customers);
             out.close();
             file.close();
             System.out.println("Data is saved to the different structures");
@@ -1384,10 +1350,10 @@ public class ParkerFilmsGUI implements Serializable {
         }
     }
 
-    private void loadMovieData() {
+    private void loadData() {
         try {
-            System.out.println("Loading Movie data from data/movieData.ser...");
-            File file = new File("data/movieData.ser");
+            System.out.println("Loading Movie data from data/programData.ser...");
+            File file = new File("data/programData.ser");
             boolean fileCreated = file.createNewFile();
             FileInputStream fileInput = new FileInputStream(file);
             ObjectInputStream in = new ObjectInputStream(fileInput);
@@ -1396,18 +1362,20 @@ public class ParkerFilmsGUI implements Serializable {
             this.movieScoresHeap = (MovieScoresHeap) in.readObject();
             this.wishlist = (Wishlist) in.readObject();
             this.haveWatched = (HaveWatched) in.readObject();
+            this.customers = (CustomerStorage) in.readObject();
             fileInput.close();
             in.close();
-            System.out.println("Data is successfully loaded from the data/movieData.ser.");
+            System.out.println("Data is successfully loaded from the data/programData.ser.");
         } catch (FileNotFoundException e) {
-            System.out.println("data/movieData.ser file is not found");
+            System.out.println("data/programData.ser file is not found");
         } catch (ClassNotFoundException e) {
             System.out.println("Class not found");
         } catch (EOFException e) {
-            System.out.println("data/movieData.ser is Empty");
+            System.out.println("data/programData.ser is Empty");
             this.moviesByID = new MoviesByID();
             this.moviesByDate = new MoviesByDate();
             this.movieScoresHeap = new MovieScoresHeap();
+            this.customers = new CustomerStorage();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1416,16 +1384,15 @@ public class ParkerFilmsGUI implements Serializable {
     private void clearAllData() {
         try {
             System.out.println("Clearing all data...");
-            emptyFile("data/movieData.ser");
-            emptyFile("data/customerData.ser");
+            emptyFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         System.out.println("All data has been cleared");
     }
 
-    private void emptyFile(String filePath) throws IOException {
-        File file = new File(filePath);
+    private void emptyFile() throws IOException {
+        File file = new File("data/programData.ser");
         FileWriter fwOb = new FileWriter(file, false);
         PrintWriter pwOb = new PrintWriter(fwOb, false);
         pwOb.flush();
