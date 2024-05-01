@@ -294,11 +294,11 @@ public class ParkerFilmsGUI implements Serializable {
                 buttonPanel.setBackground(panel.getBackground());
                 panel.add(buttonPanel, BorderLayout.SOUTH);
             } else {
-                JOptionPane.showMessageDialog(panel, firstMovie.getTitle() + "Sorry the movie is not available.\nIt'll be removed from the system.");
                 customer.getWishlist().deleteFirstMovie();
                 saveData();
+                JOptionPane.showMessageDialog(panel, firstMovie.getTitle() + "Sorry the movie is not available.\nIt'll be removed from the system.");
+                accessWishlist(customer);
             }
-
 
         } else {
             // If there are no movies in the system, prints a message
@@ -342,7 +342,7 @@ public class ParkerFilmsGUI implements Serializable {
         tableModel.addColumn("Score");
         tableModel.addColumn("Availability");
 
-        printAscendingDate(moviesByDate, tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
+        getAscendingDateCustomer(moviesByDate, tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
 
         // Creating the table
         JTable table = new JTable(tableModel) {
@@ -723,7 +723,7 @@ public class ParkerFilmsGUI implements Serializable {
         tableModel.addColumn("Score");
         tableModel.addColumn("Availability");
 
-        printAscendingDate(moviesByDate, tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
+        getAscendingDateAdmin(moviesByDate, tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
 
         // Creating the table
         JTable table = new JTable(tableModel) {
@@ -1262,19 +1262,37 @@ public class ParkerFilmsGUI implements Serializable {
         return !movieName.isEmpty() && intValidation(releaseDate, 10000101, 99999999) && intValidation(rating, 0, 100) && intValidation(available, 0, 1);
     }
 
-    private static void printAscendingDate(MoviesByDate DateBST, DefaultTableModel tableModel) {
+    private static void getAscendingDateAdmin(MoviesByDate DateBST, DefaultTableModel tableModel) {
         // Special in-order traversal to print the movies by date and adding them to a table
-        ascend(DateBST.getRoot(), tableModel);
+        ascendAdmin(DateBST.getRoot(), tableModel);
         System.out.println();
     }
 
-    private static void ascend(Movie currentMovie, DefaultTableModel tableModel) {
+    private static void ascendAdmin(Movie currentMovie, DefaultTableModel tableModel) {
         // Recursive ascend function which will append the elements of the movie into an object and append it to the table
         if (currentMovie != null) {
-            ascend(currentMovie.getRightDateMovie(), tableModel);
+            ascendAdmin(currentMovie.getRightDateMovie(), tableModel);
             Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
             tableModel.addRow(rowData);
-            ascend(currentMovie.getLeftDateMovie(), tableModel);
+            ascendAdmin(currentMovie.getLeftDateMovie(), tableModel);
+        }
+    }
+
+    private static void getAscendingDateCustomer(MoviesByDate DateBST, DefaultTableModel tableModel) {
+        // Special in-order traversal to print the movies by date and adding them to a table
+        ascendCustomer(DateBST.getRoot(), tableModel);
+        System.out.println();
+    }
+
+    private static void ascendCustomer(Movie currentMovie, DefaultTableModel tableModel) {
+        // Recursive ascend function which will append the elements of the movie into an object and append it to the table
+        if (currentMovie != null) {
+            ascendCustomer(currentMovie.getRightDateMovie(), tableModel);
+            if(currentMovie.getAvailability()) {
+                Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
+                tableModel.addRow(rowData);
+            }
+            ascendCustomer(currentMovie.getLeftDateMovie(), tableModel);
         }
     }
 
@@ -1298,6 +1316,16 @@ public class ParkerFilmsGUI implements Serializable {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////// SAVE - LOAD FUNCTIONS //////////////////////////////////////////////////////////////////////////
+
+    private void saveData() {
+        saveMovieData();
+        saveCustomers();
+    }
+
+    private void loadData() {
+        loadMovieData();
+        loadCustomers();
+    }
 
     private void saveCustomers() {
         // Function that save the customer storage dictionary to the customers.ser file
@@ -1383,16 +1411,6 @@ public class ParkerFilmsGUI implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void saveData() {
-        saveMovieData();
-        saveCustomers();
-    }
-
-    private void loadData() {
-        loadMovieData();
-        loadCustomers();
     }
 
     private void clearAllData() {
