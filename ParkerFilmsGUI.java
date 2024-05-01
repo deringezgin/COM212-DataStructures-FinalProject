@@ -148,8 +148,7 @@ public class ParkerFilmsGUI implements Serializable {
             movieIdField.setText("");
             if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
                 int movieIDInt = Integer.parseInt(movieId);
-//                Movie foundMovie = movieManager.getMoviesByID().searchMovieByID(movieIDInt);  // If so, looking for the movie
-                Movie foundMovie = moviesByID.searchMovieByID(movieIDInt);
+                Movie foundMovie = customer.getWatchedList().searchMovieByID(movieIDInt);
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
@@ -323,7 +322,121 @@ public class ParkerFilmsGUI implements Serializable {
     }
 
     private void accessHaveWatched(Customer customer) {
+        // Function to print the movies by release date on the screen
+        panel.removeAll();  // Clearing the screen
 
+        // Adding the title label
+        JLabel titleLabel = new JLabel("Customer Have Watched List", JLabel.CENTER);
+        titleLabel.setFont(titleFont);
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        // Create a table model
+        DefaultTableModel tableModel = new DefaultTableModel();
+        tableModel.addColumn("Movie Name");
+        tableModel.addColumn("Release Date");
+        tableModel.addColumn("ID");
+        tableModel.addColumn("Score");
+        tableModel.addColumn("Availability");
+
+        getCustomerHaveWatched(customer.getWatchedList(), tableModel);
+
+        // Creating the table
+        JTable table = new JTable(tableModel) {
+            @Override
+            public boolean isCellEditable(int row, int column) {  // Being sure that the cells are not editable
+                return false;
+            }
+        };
+
+        table.setFont(new Font("Verdana", Font.PLAIN, 15));
+        table.setRowHeight(25);
+
+        // Setting column widths
+        TableColumnModel columnModel = table.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(200);
+        columnModel.getColumn(1).setPreferredWidth(200);
+        columnModel.getColumn(2).setPreferredWidth(80);
+        columnModel.getColumn(3).setPreferredWidth(50);
+        columnModel.getColumn(4).setPreferredWidth(50);
+
+        // Adding a scrollPane to the table
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(500, 300)); // Set a fixed size
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Panel for buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.setBackground(panel.getBackground());
+
+        // Back button
+        JButton backButton = new JButton("Back");
+        backButton.setFont(buttonFont);
+        backButton.addActionListener(e -> customerMenu(customer));
+        buttonPanel.add(backButton);
+
+        // Search Button
+        JButton searchButton = new JButton("Search in the Have Watched");
+        searchButton.setFont(buttonFont);
+        buttonPanel.add(searchButton);
+        searchButton.addActionListener(e -> searchInHaveWatched(customer));
+
+        // Adding buttons for wishlist and watched
+        JButton addToWishlistButton = new JButton("Add to Wishlist");
+        addToWishlistButton.setFont(buttonFont);
+        addToWishlistButton.setVisible(false);
+        buttonPanel.add(addToWishlistButton);
+
+        JButton removeMovieButton = new JButton("Remove Movie");
+        removeMovieButton.setFont(buttonFont);
+        removeMovieButton.setVisible(false);
+        buttonPanel.add(removeMovieButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        ListSelectionModel selectionModel = table.getSelectionModel();  // When a row is selected
+        selectionModel.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                // Clear all action listeners from the buttons
+                for (ActionListener listener : removeMovieButton.getActionListeners()) {
+                    removeMovieButton.removeActionListener(listener);
+                }
+                for (ActionListener listener : addToWishlistButton.getActionListeners()) {
+                    addToWishlistButton.removeActionListener(listener);
+                }
+
+                if (table.getSelectedRow() != -1) {
+                    addToWishlistButton.setVisible(true);  // Show the option buttons
+                    removeMovieButton.setVisible(true);
+
+                    Object id = table.getValueAt(table.getSelectedRow(), 2); // Getting the id of the selected row (ID of the movie)
+                    removeMovieButton.addActionListener(e1 -> {  // Adding the selected movie to the watched list by id
+                        Movie movieToDelete = moviesByID.searchMovieByID((Integer) id);
+                        customer.getWatchedList().deleteMovie(movieToDelete);
+                        JOptionPane.showMessageDialog(panel, movieToDelete.getTitle() + " deleted from watched list.");
+                        saveData();
+                        table.clearSelection();
+                        accessHaveWatched(customer);
+                    });
+
+                    addToWishlistButton.addActionListener(e2 -> {  // Adding the selected movie to the wishlist by id
+                        Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
+                        customer.getWishlist().addMovie(movieToAdd);
+                        JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Wishlist.");
+                        saveData();
+                        table.clearSelection();
+                        accessHaveWatched(customer);
+                    });
+                } else {
+                    addToWishlistButton.setVisible(false);  // Don't show the option buttons if nothing is selected
+                    removeMovieButton.setVisible(false);
+                }
+            }
+        });
+
+        // Refreshing the window
+        panel.revalidate();
+        panel.repaint();
     }
 
     private void viewByReleaseDateCustomer(Customer customer) {
@@ -435,6 +548,186 @@ public class ParkerFilmsGUI implements Serializable {
         // Refreshing the window
         panel.revalidate();
         panel.repaint();
+    }
+
+    private void searchInHaveWatched(Customer customer) {
+        panel.removeAll();  // Clearing the screen
+
+        // Title label
+        JLabel titleLabel = new JLabel("Search Movies By ID or Release Date", JLabel.CENTER);
+        titleLabel.setFont(boldSubTitleFont);
+        panel.add(titleLabel, BorderLayout.NORTH);
+
+        // Search Panel for saving the input field, button and text fields
+        JPanel searchPanel = new JPanel(new GridLayout(7, 2, 20, 0));
+        searchPanel.setBackground(panel.getBackground());
+
+        // Text-field for entering the movieID
+        JTextField movieIdField = new JTextField(10);
+        movieIdField.setFont(textFont);
+
+        JTextField movieDateField = new JTextField(10);
+        movieDateField.setFont(textFont);
+
+        // Setting up the search button and movie labels
+        JButton searchButtonID = new JButton("Search Movie by ID");
+        JButton searchButtonDate = new JButton("Search Movie by Date");
+        JLabel movieTitleLabel = new JLabel("Title: ");
+        JLabel movieReleaseDateLabel = new JLabel("Release Date: ");
+        JLabel movieIDLabel = new JLabel("ID: ");
+        JLabel movieRatingLabel = new JLabel("Rating: ");
+        JLabel movieAvailabilityLabel = new JLabel("Availability: ");
+        JLabel empty = new JLabel("");
+        JButton addWishlistButton = new JButton("Add Movie to the Wishlist");
+        JButton removeFromHaveWatched = new JButton("Remove from Have Watched");
+        searchButtonID.setFont(boldTextFont);  // Setting the font
+        searchButtonDate.setFont(boldTextFont);
+        movieTitleLabel.setFont(boldTextFont);
+        movieReleaseDateLabel.setFont(boldTextFont);
+        movieIDLabel.setFont(boldTextFont);
+        movieRatingLabel.setFont(boldTextFont);
+        movieAvailabilityLabel.setFont(boldTextFont);
+        addWishlistButton.setFont(buttonFont);
+        removeFromHaveWatched.setFont(buttonFont);
+        addWishlistButton.setPreferredSize(new Dimension(250, 40)); // Setting the size of the buttons
+        removeFromHaveWatched.setPreferredSize(new Dimension(250, 40));
+
+        // Adding the button and the text fields to the searchPanel
+        searchPanel.add(movieIdField);
+        searchPanel.add(searchButtonID);
+        searchPanel.add(movieDateField);
+        searchPanel.add(searchButtonDate);
+        searchPanel.add(movieTitleLabel);
+        searchPanel.add(movieReleaseDateLabel);
+        searchPanel.add(movieIDLabel);
+        searchPanel.add(movieRatingLabel);
+        searchPanel.add(movieAvailabilityLabel);
+        searchPanel.add(empty);
+        panel.add(searchPanel, BorderLayout.CENTER);  // Adding the search panel to the main panel
+
+        // Creating a back button for going back to the customer menu
+        JButton backButton = new JButton("Back");
+        backButton.setFont(buttonFont);
+        backButton.addActionListener(e -> accessHaveWatched(customer));
+
+        searchButtonID.addActionListener(e -> {
+            // Search button that looks for a movie by id
+            String movieId = movieIdField.getText();
+            movieDateField.setText("");
+            movieIdField.setText("");
+            if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
+                int movieIDInt = Integer.parseInt(movieId);
+                Movie foundMovie = moviesByID.searchMovieByID(movieIDInt);
+                if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
+                    movieTitleLabel.setText("Title: " + foundMovie.getTitle());
+                    movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
+                    movieRatingLabel.setText("Rating: " + foundMovie.getScore());
+                    movieIDLabel.setText("ID: " + foundMovie.getID());
+                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    searchPanel.add(addWishlistButton);  // Also show the buttons as options
+                    searchPanel.add(removeFromHaveWatched);
+
+                    addWishlistButton.addActionListener(e12 -> {
+                        // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
+                        customer.getWishlist().addMovie(foundMovie);
+                        saveData();
+                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
+                        accessMoviesByIDorReleaseDateCustomer(customer);
+                    });
+
+                    removeFromHaveWatched.addActionListener(e1 -> {
+                        // If the have watched button is clicked, add the movie and update the have watched
+                        customer.getWatchedList().deleteMovie(foundMovie);
+                        saveData();
+                        JOptionPane.showMessageDialog(panel, "Movie removed from haveWatched");
+                        searchInHaveWatched(customer);
+                    });
+                } else {
+                    // If the movie is not found
+                    JOptionPane.showMessageDialog(panel, "No Movie Found with the specific movie ID");
+                }
+            } else {
+                // If the input is invalid
+                JOptionPane.showMessageDialog(panel, "Please enter a valid movie ID (10000 - 99999)");
+            }
+        });
+
+        searchButtonDate.addActionListener(e -> {
+            // Search button that looks for a movie by id
+            String movieDate = movieDateField.getText();
+            movieDateField.setText("");
+            movieIdField.setText("");
+
+            if (intValidation(movieDate, 10000101, 99999999)) {  // Checking if the input is a valid integer in the range
+                int movieDateInt = Integer.parseInt(movieDate);
+                Movie foundMovie = moviesByDate.searchMovieByDate(movieDateInt);
+                if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
+                    movieTitleLabel.setText("Title: " + foundMovie.getTitle());
+                    movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
+                    movieRatingLabel.setText("Rating: " + foundMovie.getScore());
+                    movieIDLabel.setText("ID: " + foundMovie.getID());
+                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    searchPanel.add(addWishlistButton);  // Also show the buttons as options
+                    searchPanel.add(removeFromHaveWatched);
+
+                    addWishlistButton.addActionListener(e12 -> {
+                        // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
+                        customer.getWishlist().addMovie(foundMovie);
+                        saveData();
+                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Wish-List");
+                        accessMoviesByIDorReleaseDateCustomer(customer);
+                    });
+
+                    removeFromHaveWatched.addActionListener(e1 -> {
+                        // If the have watched button is clicked, add the movie and update the have watched
+                        customer.getWatchedList().insertMovie(foundMovie);
+                        saveData();
+                        JOptionPane.showMessageDialog(panel, "Movie added to Watched List");
+                    });
+                } else {
+                    // If the movie is not found
+                    JOptionPane.showMessageDialog(panel, "No Movie Found with the specific release Date");
+                }
+            } else {
+                // If the input is invalid
+                JOptionPane.showMessageDialog(panel, "Please enter a valid Release Date (YYYYMMDD)");
+            }
+        });
+
+
+        panel.add(backButton, BorderLayout.SOUTH);
+
+        // Updating the screen
+        panel.revalidate();
+        panel.repaint();
+
+    }
+
+    private static void getAscendingDateCustomer(MoviesByDate DateBST, DefaultTableModel tableModel) {
+        // Special in-order traversal to print the movies by date and adding them to a table
+        ascendCustomer(DateBST.getRoot(), tableModel);
+        System.out.println();
+    }
+
+    private static void ascendCustomer(Movie currentMovie, DefaultTableModel tableModel) {
+        // Recursive ascend function which will append the elements of the movie into an object and append it to the table
+        if (currentMovie != null) {
+            ascendCustomer(currentMovie.getRightDateMovie(), tableModel);
+            if (currentMovie.getAvailability()) {
+                Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
+                tableModel.addRow(rowData);
+            }
+            ascendCustomer(currentMovie.getLeftDateMovie(), tableModel);
+        }
+    }
+
+    private static void getCustomerHaveWatched(HaveWatched haveWatched, DefaultTableModel tableModel) {
+        Movie currentMovie = haveWatched.getHead();
+        while (currentMovie != null) {
+            Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
+            tableModel.addRow(rowData);
+            currentMovie = currentMovie.getNextMovie();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -979,6 +1272,22 @@ public class ParkerFilmsGUI implements Serializable {
         saveData();
     }
 
+    private static void getAscendingDateAdmin(MoviesByDate DateBST, DefaultTableModel tableModel) {
+        // Special in-order traversal to print the movies by date and adding them to a table
+        ascendAdmin(DateBST.getRoot(), tableModel);
+        System.out.println();
+    }
+
+    private static void ascendAdmin(Movie currentMovie, DefaultTableModel tableModel) {
+        // Recursive ascend function which will append the elements of the movie into an object and append it to the table
+        if (currentMovie != null) {
+            ascendAdmin(currentMovie.getRightDateMovie(), tableModel);
+            Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
+            tableModel.addRow(rowData);
+            ascendAdmin(currentMovie.getLeftDateMovie(), tableModel);
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //////////////////// OTHER GUI COMPONENTS /////////////////////////////////////////////////////////////////////////
@@ -1274,40 +1583,6 @@ public class ParkerFilmsGUI implements Serializable {
         // Performing validation in the new movie creation process.
         // Checks if the name field is not empty and the other fields are integers in the valid range
         return !movieName.isEmpty() && intValidation(releaseDate, 10000101, 99999999) && intValidation(rating, 0, 100) && intValidation(available, 0, 1);
-    }
-
-    private static void getAscendingDateAdmin(MoviesByDate DateBST, DefaultTableModel tableModel) {
-        // Special in-order traversal to print the movies by date and adding them to a table
-        ascendAdmin(DateBST.getRoot(), tableModel);
-        System.out.println();
-    }
-
-    private static void ascendAdmin(Movie currentMovie, DefaultTableModel tableModel) {
-        // Recursive ascend function which will append the elements of the movie into an object and append it to the table
-        if (currentMovie != null) {
-            ascendAdmin(currentMovie.getRightDateMovie(), tableModel);
-            Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
-            tableModel.addRow(rowData);
-            ascendAdmin(currentMovie.getLeftDateMovie(), tableModel);
-        }
-    }
-
-    private static void getAscendingDateCustomer(MoviesByDate DateBST, DefaultTableModel tableModel) {
-        // Special in-order traversal to print the movies by date and adding them to a table
-        ascendCustomer(DateBST.getRoot(), tableModel);
-        System.out.println();
-    }
-
-    private static void ascendCustomer(Movie currentMovie, DefaultTableModel tableModel) {
-        // Recursive ascend function which will append the elements of the movie into an object and append it to the table
-        if (currentMovie != null) {
-            ascendCustomer(currentMovie.getRightDateMovie(), tableModel);
-            if (currentMovie.getAvailability()) {
-                Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
-                tableModel.addRow(rowData);
-            }
-            ascendCustomer(currentMovie.getLeftDateMovie(), tableModel);
-        }
     }
 
     private static void nodeChecker(MoviesByDate mbd, MoviesByID mbi, MovieScoresHeap msh) {

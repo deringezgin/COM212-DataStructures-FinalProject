@@ -23,14 +23,47 @@ public class HaveWatched implements Serializable {
         head = newMovie;
     }
 
-    public Movie searchMovie(String movieTitle) {
+    public Movie searchMovieByID(int movieID) {
         Movie temp = head;
         while (temp != null) {
-            if (Objects.equals(temp.getTitle(), movieTitle)) {
+            if (Objects.equals(temp.getID(), movieID)) {
                 return temp;
             }
             temp = temp.getNextMovie();
         }
         return null;
+    }
+
+    public Movie searchMovieByDate(int movieDate) {
+        Movie temp = head;
+        while (temp != null) {
+            if (Objects.equals(temp.getReleaseDate(), movieDate)) {
+                return temp;
+            }
+            temp = temp.getNextMovie();
+        }
+        return null;
+    }
+
+    public void deleteMovie(Movie movie) {
+        Movie currentMovie = head;
+        Movie prev;
+        if (movie == currentMovie) {
+            head = currentMovie.getNextMovie();
+            movie.setNextMovie(null);
+        } else {
+            while (currentMovie != null) {
+                prev = currentMovie;
+                currentMovie = currentMovie.getNextMovie();
+                if (currentMovie == movie) {
+                    prev.setNextMovie(currentMovie.getNextMovie());
+                    currentMovie.setNextMovie(null);
+                }
+            }
+        }
+    }
+
+    public Movie getHead() {
+        return head;
     }
 }
