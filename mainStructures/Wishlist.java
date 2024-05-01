@@ -3,11 +3,14 @@ Wishlist to keep track of the last 20 movies that the user watched.
 We used a queue to implement this functionality
 */
 
-package structures;
+package mainStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Wishlist implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private Movie[] wishList;
     private int filmCount;
     private int firstMovieIndex;

@@ -5,11 +5,14 @@ It has a wishlist and a have-watched list
 It has a next pointer to use in the customer dictionary which we implemented using separate chaining
  */
 
-package structures;
+package mainStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Customer implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private String name;
     private String email;
     private int credit;
@@ -23,15 +26,6 @@ public class Customer implements Serializable {
         this.credit = credit;
         this.email = email;
         this.wishlist = new Wishlist();
-        this.haveWatched = new HaveWatched();
-        this.password = "password";
-    }
-
-    public Customer(String name, String email, int credit, Wishlist wishlist) {
-        this.name = name;
-        this.credit = credit;
-        this.email = email;
-        this.wishlist = wishlist;
         this.haveWatched = new HaveWatched();
         this.password = "password";
     }

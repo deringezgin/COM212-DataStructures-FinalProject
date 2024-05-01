@@ -1,44 +1,35 @@
-import managers.ImportManager;
-import managers.MovieManager;
-import managers.SaveLoadManager;
-import structures.*;
+import mainStructures.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.io.*;
 
-public class ParkerFilmsGUI {
+public class ParkerFilmsGUI implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private static final Font titleFont = new Font("Verdana", Font.BOLD, 40);
     private static final Font textFont = new Font("Verdana", Font.PLAIN, 20);
     private static final Font boldTextFont = new Font("Verdana", Font.BOLD, 20);
     private static final Font buttonFont = new Font("Verdana", Font.BOLD, 20);
     private static final Font subTitleFont = new Font("Verdana", Font.PLAIN, 30);
     private static final Font boldSubTitleFont = new Font("Verdana", Font.BOLD, 30);
-    private SaveLoadManager saveLoadManager;
     private CustomerStorage customers;
     private Wishlist wishlist;
     private HaveWatched haveWatched;
     private MovieScoresHeap movieScoresHeap;
     private MoviesByID moviesByID;
     private MoviesByDate moviesByDate;
-    private MovieManager movieManager;
     private JPanel panel;
 
     public ParkerFilmsGUI() {
         // Loading data
-        this.saveLoadManager = new SaveLoadManager();
-        this.customers = saveLoadManager.loadCustomers();
-        this.wishlist = saveLoadManager.loadWishlist();
-        this.haveWatched = saveLoadManager.loadHaveWatched();
-        this.movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
-        this.moviesByID = saveLoadManager.loadMoviesByID();
-        this.moviesByDate = saveLoadManager.loadMoviesByDate();
-        this.movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
+        loadData();
     }
 
-    //////////////////// CUSTOMER SIDE OF THE PROGAM //////////////////////////////////////////////////////////////////
+    //////////////////// CUSTOMER SIDE OF THE PROGRAM //////////////////////////////////////////////////////////////////
 
     private void customerMenu(Customer customer) {
         // Customer menu that has the different options for the customer
@@ -70,30 +61,20 @@ public class ParkerFilmsGUI {
         buttonPanel.add(goMainMenu);
         panel.add(buttonPanel, BorderLayout.CENTER);
 
-        accessMoviesByID.addActionListener(e -> {
-            // If the button is clicked run the method that creates the screen with the access movies by id interface
-            accessMoviesByIDorReleaseDateCustomer(customer);
-        });
+        // If the button is clicked run the method that creates the screen with the access movies by id interface
+        accessMoviesByID.addActionListener(e -> accessMoviesByIDorReleaseDateCustomer(customer));
 
-        accessWishlist.addActionListener(e -> {
-            // If the button is clicked run the method that creates the screen with the wishlist access interface
-            accessWishlist(customer);
-        });
+        // If the button is clicked run the method that creates the screen with the wishlist access interface
+        accessWishlist.addActionListener(e -> accessWishlist(customer));
 
-        accessHaveWatched.addActionListener(e -> {
-            // If the button is clicked run the method that creates the screen with the wishlist access interface
-            accessHaveWatched(customer);
-        });
+        // If the button is clicked run the method that creates the screen with the wishlist access interface
+        accessHaveWatched.addActionListener(e -> accessHaveWatched(customer));
 
-        printMoviesByDate.addActionListener(e -> {
-            // If thew button is clicked, run the method that creates the screen that prints the movies by release date
-            viewByReleaseDateCustomer(customer);
-        });
+        // If the button is clicked, run the method that creates the screen that prints the movies by release date
+        printMoviesByDate.addActionListener(e -> viewByReleaseDateCustomer(customer));
 
-        goMainMenu.addActionListener(e -> {
-            // If the button is clicked, it returns to the main menu.
-            loginMenu("Customer");
-        });
+        // If the button is clicked, it returns to the main menu.
+        goMainMenu.addActionListener(e -> loginMenu("Customer"));
 
         // Updating the screen
         panel.revalidate();
@@ -167,7 +148,8 @@ public class ParkerFilmsGUI {
             movieIdField.setText("");
             if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
                 int movieIDInt = Integer.parseInt(movieId);
-                Movie foundMovie = movieManager.getMoviesByID().searchMovieByID(movieIDInt);  // If so, looking for the movie
+//                Movie foundMovie = movieManager.getMoviesByID().searchMovieByID(movieIDInt);  // If so, looking for the movie
+                Movie foundMovie = moviesByID.searchMovieByID(movieIDInt);
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
@@ -180,8 +162,7 @@ public class ParkerFilmsGUI {
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
                         customer.getWishlist().addMovie(foundMovie);
-                        saveLoadManager.saveWishlist(customer.getWishlist());
-                        saveLoadManager.saveCustomers(customers);
+                        saveData();
                         JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
@@ -189,7 +170,7 @@ public class ParkerFilmsGUI {
                     addHaveWatchedButton.addActionListener(e1 -> {
                         // If the have watched button is clicked, add the movie and update the have watched
                         customer.getWatchedList().insertMovie(foundMovie);
-                        saveLoadManager.saveHaveWatched(customer.getWatchedList());
+                        saveData();
                         JOptionPane.showMessageDialog(panel, "Movie added to haveWatched");
                     });
                 } else {
@@ -209,8 +190,8 @@ public class ParkerFilmsGUI {
             movieIdField.setText("");
 
             if (intValidation(movieDate, 10000101, 99999999)) {  // Checking if the input is a valid integer in the range
-                int movieIDInt = Integer.parseInt(movieDate);
-                Movie foundMovie = movieManager.getMoviesByDate().searchMovieByDate(movieIDInt);  // If so, looking for the movie
+                int movieDateInt = Integer.parseInt(movieDate);
+                Movie foundMovie = moviesByDate.searchMovieByDate(movieDateInt);
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
@@ -223,8 +204,7 @@ public class ParkerFilmsGUI {
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
                         customer.getWishlist().addMovie(foundMovie);
-                        saveLoadManager.saveWishlist(customer.getWishlist());
-                        saveLoadManager.saveCustomers(customers);
+                        saveData();
                         JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Wish-List");
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
@@ -232,7 +212,7 @@ public class ParkerFilmsGUI {
                     addHaveWatchedButton.addActionListener(e1 -> {
                         // If the have watched button is clicked, add the movie and update the have watched
                         customer.getWatchedList().insertMovie(foundMovie);
-                        saveLoadManager.saveHaveWatched(customer.getWatchedList());
+                        saveData();
                         JOptionPane.showMessageDialog(panel, "Movie added to Watched List");
                     });
                 } else {
@@ -299,8 +279,7 @@ public class ParkerFilmsGUI {
                     // If the user choose to remove the least rated movie
                     Movie movie = customer.getWishlist().getFirstMovie();
                     customer.getWishlist().deleteFirstMovie();
-                    saveLoadManager.saveWishlist(customer.getWishlist());
-                    saveLoadManager.saveCustomers(customers);
+                    saveData();
                     JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.");
                     accessWishlist(customer);
                 });
@@ -317,8 +296,7 @@ public class ParkerFilmsGUI {
             } else {
                 JOptionPane.showMessageDialog(panel, firstMovie.getTitle() + "Sorry the movie is not available.\nIt'll be removed from the system.");
                 customer.getWishlist().deleteFirstMovie();
-                saveLoadManager.saveWishlist(customer.getWishlist());
-                saveLoadManager.saveCustomers(customers);
+                saveData();
             }
 
 
@@ -364,7 +342,7 @@ public class ParkerFilmsGUI {
         tableModel.addColumn("Score");
         tableModel.addColumn("Availability");
 
-        printAscendingDate(movieManager.getMoviesByDate(), tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
+        printAscendingDate(moviesByDate, tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
 
         // Creating the table
         JTable table = new JTable(tableModel) {
@@ -413,7 +391,6 @@ public class ParkerFilmsGUI {
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-
         ListSelectionModel selectionModel = table.getSelectionModel();  // When a row is selected
         selectionModel.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -434,8 +411,7 @@ public class ParkerFilmsGUI {
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
                         customer.getWatchedList().insertMovie(movieToAdd);
                         JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Have Watched.");
-                        saveLoadManager.saveHaveWatched(customer.getWatchedList());
-                        saveLoadManager.saveCustomers(customers);
+                        saveData();
                         table.clearSelection();
                         viewByReleaseDateCustomer(customer);
                     });
@@ -444,8 +420,7 @@ public class ParkerFilmsGUI {
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
                         customer.getWishlist().addMovie(movieToAdd);
                         JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Wishlist.");
-                        saveLoadManager.saveWishlist(customer.getWishlist());
-                        saveLoadManager.saveCustomers(customers);
+                        saveData();
                         table.clearSelection();
                         viewByReleaseDateCustomer(customer);
                     });
@@ -583,12 +558,14 @@ public class ParkerFilmsGUI {
             String available = avaliableField.getText();
             if (newMovieValidation(movieName, releaseDate, rating, available)) {  // Perform validation
                 int releaseDateNumeric = Integer.parseInt(releaseDateField.getText());
-                int idNumeric = movieManager.getMoviesByDate().getCount() + 1;
+                int idNumeric = moviesByDate.getCount() + 1;
                 int ratingNumeric = Integer.parseInt(ratingField.getText());
                 boolean availableBoolean = Integer.parseInt(avaliableField.getText()) == 1;
                 Movie newMovie = new Movie(movieName, releaseDateNumeric, idNumeric, ratingNumeric, availableBoolean);  // If valid, create a new movie
-                movieManager.insert(newMovie);  // Insert the movie in the movie manager
-                saveLoadManager.saveMovies(movieManager);  // Save the data
+                moviesByID.insertMovieByID(newMovie);
+                moviesByDate.insertMovieByDate(newMovie);
+                movieScoresHeap.insertMovie(newMovie);
+                saveData();
                 JOptionPane.showMessageDialog(panel, movieName + " added successfully");  // Print a message to the screen
                 adminMenu();  // Return to the admin menu
             } else {  // If validation is failed, print a message to the screen and list the rules.
@@ -628,7 +605,7 @@ public class ParkerFilmsGUI {
         panel.add(leastRatedTitleLabel, BorderLayout.NORTH);
 
         // Saving the leastRated movie in a variable
-        Movie leastRated = movieManager.getLeastRatedMovie();
+        Movie leastRated = movieScoresHeap.findMinScore();
         if (leastRated != null) {  // If the least rated movie is not null (not empty)
             JPanel movieInfoPanel = new JPanel(new GridLayout(5, 1));  // Create a new panel for displaying the information of the movie
             movieInfoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -685,12 +662,10 @@ public class ParkerFilmsGUI {
                 System.out.println(moviesByDate.searchMovieByDate(leastRated.getReleaseDate()));
 
                 leastRated.setAvailability(false);  // Set the availability to false
-                movieManager.deleteMinScoreMovie();  // Delete the min rated movie
-                saveLoadManager.saveMovies(movieManager);  // Update the save/load
-                saveLoadManager.saveCustomers(customers);
-                saveLoadManager.saveWishlist(wishlist);
-
-
+                movieScoresHeap.deleteMinScore();
+                moviesByID.deleteMovieID(leastRated);
+                moviesByDate.deleteMovieDate(leastRated);
+                saveData();
                 Customer customer = customers.lookUpCustomer(1000);
                 Wishlist wlist = customer.getWishlist();
                 System.out.println(wlist.getFirstMovie());
@@ -748,7 +723,7 @@ public class ParkerFilmsGUI {
         tableModel.addColumn("Score");
         tableModel.addColumn("Availability");
 
-        printAscendingDate(movieManager.getMoviesByDate(), tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
+        printAscendingDate(moviesByDate, tableModel);  // Special in-order traversal to retrieve nodes by date and saving them into the tableModel
 
         // Creating the table
         JTable table = new JTable(tableModel) {
@@ -818,9 +793,7 @@ public class ParkerFilmsGUI {
                         setAsAvaliableButton.setVisible(false);
                         setAsUnavaliableButton.addActionListener(e2 -> {
                             movieToModify.setAvailability(false);
-                            saveLoadManager.saveMovies(movieManager);
-                            saveLoadManager.saveCustomers(customers);
-                            saveLoadManager.saveWishlist(wishlist);
+                            saveData();
                             table.clearSelection();
                             JOptionPane.showMessageDialog(panel, movieToModify.getTitle() + " Set to unavailable");
                             viewByReleaseDateAdmin();
@@ -830,9 +803,7 @@ public class ParkerFilmsGUI {
                         setAsUnavaliableButton.setVisible(false);
                         setAsAvaliableButton.addActionListener(e2 -> {
                             movieToModify.setAvailability(true);
-                            saveLoadManager.saveMovies(movieManager);
-                            saveLoadManager.saveCustomers(customers);
-                            saveLoadManager.saveWishlist(wishlist);
+                            saveData();
                             table.clearSelection();
                             JOptionPane.showMessageDialog(panel, movieToModify.getTitle() + " Set to available");
                             viewByReleaseDateAdmin();
@@ -844,7 +815,6 @@ public class ParkerFilmsGUI {
                 }
             }
         });
-
 
         // Refreshing the window
         panel.revalidate();
@@ -888,7 +858,6 @@ public class ParkerFilmsGUI {
         movieRatingLabel.setFont(boldTextFont);
         movieAvailabilityLabel.setFont(boldTextFont);
 
-
         // Adding the button and the text fields to the searchPanel
         searchPanel.add(movieIdField);
         searchPanel.add(searchButtonID);
@@ -927,7 +896,7 @@ public class ParkerFilmsGUI {
             movieIdField.setText("");
             if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
                 int movieIDInt = Integer.parseInt(movieId);
-                Movie foundMovie = movieManager.getMoviesByID().searchMovieByID(movieIDInt);  // If so, looking for the movie
+                Movie foundMovie = moviesByID.searchMovieByID(movieIDInt);  // If so, looking for the movie
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
@@ -942,14 +911,10 @@ public class ParkerFilmsGUI {
                     setAsUnavailableButton.addActionListener(e1 -> {
                         foundMovie.setAvailability(false);
                         movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
-                        saveLoadManager.saveMovies(movieManager);
-                        saveLoadManager.saveCustomers(customers);
-                        saveLoadManager.saveWishlist(wishlist);
+                        saveData();
                         JOptionPane.showMessageDialog(panel, "Movie Set to unavailable");
                         accessMoviesByIDorReleaseDateAdmin();
                     });
-
-
                 } else {
                     // If the movie is not found
                     JOptionPane.showMessageDialog(panel, "No Movie Found with the specific movie ID");
@@ -968,7 +933,7 @@ public class ParkerFilmsGUI {
 
             if (intValidation(movieDate, 10000101, 99999999)) {  // Checking if the input is a valid integer in the range
                 int movieIDInt = Integer.parseInt(movieDate);
-                Movie foundMovie = movieManager.getMoviesByDate().searchMovieByDate(movieIDInt);  // If so, looking for the movie
+                Movie foundMovie = moviesByDate.searchMovieByDate(movieIDInt);  // If so, looking for the movie
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
@@ -983,9 +948,7 @@ public class ParkerFilmsGUI {
                     setAsUnavailableButton.addActionListener(e1 -> {
                         foundMovie.setAvailability(false);
                         movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
-                        saveLoadManager.saveMovies(movieManager);
-                        saveLoadManager.saveCustomers(customers);
-                        saveLoadManager.saveWishlist(wishlist);
+                        saveData();
                         JOptionPane.showMessageDialog(panel, "Movie Set to unavailable");
                         accessMoviesByIDorReleaseDateAdmin();
                     });
@@ -1008,16 +971,11 @@ public class ParkerFilmsGUI {
     }
 
     private void returnToSeed() {
-        saveLoadManager.clearAllData();
-        customers = saveLoadManager.loadCustomers();
-        wishlist = saveLoadManager.loadWishlist();
-        movieScoresHeap = saveLoadManager.loadMovieScoresHeap();
-        moviesByID = saveLoadManager.loadMoviesByID();
-        moviesByDate = saveLoadManager.loadMoviesByDate();
-        movieManager = new MovieManager(moviesByDate, moviesByID, movieScoresHeap);
-        ImportManager importManager = new ImportManager(movieManager, customers);
+        clearAllData();
+        loadData();
+        ImportManager importManager = new ImportManager(moviesByID, moviesByDate, movieScoresHeap, customers);
         importManager.importAllData();
-        saveLoadManager.saveAllData(customers, wishlist, haveWatched, movieScoresHeap, moviesByID, moviesByDate);
+        saveData();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1027,7 +985,6 @@ public class ParkerFilmsGUI {
     private void welcomeMenu() {
         // Main menu of our program that has 3 options: Customer login - Admin Login and New Customer Creation
         // Title of the welcome menu
-        nodeChecker(movieManager);
         JLabel titleLabel = new JLabel("Parker Films", JLabel.CENTER);
         titleLabel.setFont(new Font("Verdana", Font.BOLD, 60));
         panel.add(titleLabel, BorderLayout.CENTER); // Add the title label to the center of the panel
@@ -1047,28 +1004,22 @@ public class ParkerFilmsGUI {
 
         // Spacing between the elements
         JPanel buttonPanel = new JPanel(new FlowLayout());
-        buttonPanel.setBackground(panel.getBackground());  // Match the background color
+        buttonPanel.setBackground(panel.getBackground());  // Matching the background color
         buttonPanel.add(customerLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));  // Add space between buttons
+        buttonPanel.add(Box.createHorizontalStrut(20));  // Adding space between buttons
         buttonPanel.add(adminLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(20));  // Add space between buttons
+        buttonPanel.add(Box.createHorizontalStrut(20));  // Adding space between buttons
         buttonPanel.add(newCustomerButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);  // Add the button panel to the bottom of the panel
+        panel.add(buttonPanel, BorderLayout.SOUTH);  // Adding the button panel to the bottom of the panel
 
-        customerLoginButton.addActionListener(e -> {
-            // If the customer login button is clicked, create a login menu in the customer version
-            loginMenu("Customer");
-        });
+        // If the customer login button is clicked, create a login menu in the customer version
+        customerLoginButton.addActionListener(e -> loginMenu("Customer"));
 
-        adminLoginButton.addActionListener(e -> {
-            // If the admin login button is clicked, create a login menu in the admin version
-            loginMenu("Admin");
-        });
+        // If the admin login button is clicked, create a login menu in the admin version
+        adminLoginButton.addActionListener(e -> loginMenu("Admin"));
 
-        newCustomerButton.addActionListener(e -> {
-            // If the new customer button is clicked, go to the sign-up page
-            newCustomerMenu();
-        });
+        // If the new customer button is clicked, go to the sign-up page
+        newCustomerButton.addActionListener(e -> newCustomerMenu());
 
         // Updating the screen
         panel.revalidate();
@@ -1235,7 +1186,7 @@ public class ParkerFilmsGUI {
             if (valid) {  // If it's valid, creates a new customer, shows a message and moves to the login menu
                 Customer customer = new Customer(username, email, Integer.parseInt(credit), new Wishlist(), password);
                 customers.insertCustomer(customer);
-                saveLoadManager.saveCustomers(customers);
+                saveData();
                 JOptionPane.showMessageDialog(panel, "Customer successfully created");
                 loginMenu("Customer");
             } else {  // if it's not valid, shows another message
@@ -1327,13 +1278,141 @@ public class ParkerFilmsGUI {
         }
     }
 
-    private static void nodeChecker(MovieManager movieManager) {
+    private static void nodeChecker(MoviesByDate mbd, MoviesByID mbi, MovieScoresHeap msh) {
+        // Function to check the location of the same Node in the different data structures
+        // It's not used anywhere but it's helpful for debugging
         System.out.println("NODE CHECKER");
         System.out.println("CURRENTLY LEAST RATED NODE");
-        Movie leastRated = movieManager.getLeastRatedMovie();
-        System.out.println(leastRated);
-        System.out.println(movieManager.getMoviesByDate().searchMovieByDate(leastRated.getReleaseDate()));
-        System.out.println(movieManager.getMoviesByID().searchMovieByID(leastRated.getID()));
+        Movie leastRated = msh.findMinScore();
+
+        if (leastRated != null) {
+            System.out.println(leastRated.getTitle());
+            System.out.println(leastRated);
+            System.out.println(leastRated.getTitle());
+            System.out.println(mbd.searchMovieByDate(leastRated.getReleaseDate()));
+            System.out.println(leastRated.getTitle());
+            System.out.println(mbi.searchMovieByID(leastRated.getID()));
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////// SAVE - LOAD FUNCTIONS //////////////////////////////////////////////////////////////////////////
+
+    private void saveCustomers() {
+        // Function that save the customer storage dictionary to the customers.ser file
+        try {
+            System.out.println("Saving customers...");
+            FileOutputStream file = new FileOutputStream("data/customerData.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(this.customers);
+            out.close();
+            file.close();
+            System.out.println("Customers are successfully saved to the data/customerData.ser");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadCustomers() {
+        // Function that reads the dictionary that stores the customers from the customers.ser file
+        try {
+            System.out.println("Loading data/customerData.ser...");
+            File file = new File("data/customerData.ser");
+            boolean fileCreated = file.createNewFile();
+            FileInputStream fileInput = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fileInput);
+            this.customers = (CustomerStorage) in.readObject();
+            fileInput.close();
+            in.close();
+            System.out.println("Customers are successfully loaded from the data/customers.ser");
+        } catch (FileNotFoundException e) {
+            System.out.println("data/customerData.ser file is not found");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
+        } catch (EOFException e) {
+            System.out.println("data/customerData.ser is Empty");
+            this.customers = new CustomerStorage();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveMovieData() {
+        try {
+            System.out.println("Saving movie data into the structures...");
+            FileOutputStream file = new FileOutputStream("data/movieData.ser");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(this.moviesByID);
+            out.writeObject(this.moviesByDate);
+            out.writeObject(this.movieScoresHeap);
+            out.writeObject(this.wishlist);
+            out.writeObject(this.haveWatched);
+            out.close();
+            file.close();
+            System.out.println("Data is saved to the different structures");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadMovieData() {
+        try {
+            System.out.println("Loading Movie data from data/movieData.ser...");
+            File file = new File("data/movieData.ser");
+            boolean fileCreated = file.createNewFile();
+            FileInputStream fileInput = new FileInputStream(file);
+            ObjectInputStream in = new ObjectInputStream(fileInput);
+            this.moviesByID = (MoviesByID) in.readObject();
+            this.moviesByDate = (MoviesByDate) in.readObject();
+            this.movieScoresHeap = (MovieScoresHeap) in.readObject();
+            this.wishlist = (Wishlist) in.readObject();
+            this.haveWatched = (HaveWatched) in.readObject();
+            fileInput.close();
+            in.close();
+            System.out.println("Data is successfully loaded from the data/movieData.ser.");
+        } catch (FileNotFoundException e) {
+            System.out.println("data/movieData.ser file is not found");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not found");
+        } catch (EOFException e) {
+            System.out.println("data/movieData.ser is Empty");
+            this.moviesByID = new MoviesByID();
+            this.moviesByDate = new MoviesByDate();
+            this.movieScoresHeap = new MovieScoresHeap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveData() {
+        saveMovieData();
+        saveCustomers();
+    }
+
+    private void loadData() {
+        loadMovieData();
+        loadCustomers();
+    }
+
+    private void clearAllData() {
+        try {
+            System.out.println("Clearing all data...");
+            emptyFile("data/movieData.ser");
+            emptyFile("data/customerData.ser");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("All data has been cleared");
+    }
+
+    private void emptyFile(String filePath) throws IOException {
+        File file = new File(filePath);
+        FileWriter fwOb = new FileWriter(file, false);
+        PrintWriter pwOb = new PrintWriter(fwOb, false);
+        pwOb.flush();
+        pwOb.close();
+        fwOb.close();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

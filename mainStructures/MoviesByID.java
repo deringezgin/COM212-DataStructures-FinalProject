@@ -2,11 +2,14 @@
 A BST that organizes the movies by the ID.
 */
 
-package structures;
+package mainStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class MoviesByID implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private Movie root;
 
     public MoviesByID() {
@@ -114,42 +117,6 @@ public class MoviesByID implements Serializable {
             return searcher(movie.getLeftIDMovie(), movieID);
         } else {
             return searcher(movie.getRightIDMovie(), movieID);
-        }
-    }
-
-    public void printAscendingID() {
-        // In-order traversal for the BST with ID
-        ascend(root);
-        System.out.println();
-    }
-
-    private void ascend(Movie x) {
-        // Recursive function that traverses the tree and prints the values
-        if (x != null) {
-            ascend(x.getLeftIDMovie());
-            System.out.print(x.getID() + " ");
-            ascend(x.getRightIDMovie());
-        }
-    }
-
-    public void printTree() {
-        // Function that prints the tree
-        printTree2(root);
-        System.out.println();
-    }
-
-    private void printTree2(Movie tree) {
-        // Recursive function that prints the tree
-        if (tree != null) {
-            System.out.print(tree.getID() + " ");
-            if (tree.getLeftIDMovie() != null)
-                System.out.print("Left: " + tree.getLeftIDMovie().getID() + " ");
-            else System.out.print("Left: null ");
-            if (tree.getRightIDMovie() != null)
-                System.out.println("Right: " + tree.getRightIDMovie().getID() + " ");
-            else System.out.println("Right: null ");
-            printTree2(tree.getLeftIDMovie());
-            printTree2(tree.getRightIDMovie());
         }
     }
 }

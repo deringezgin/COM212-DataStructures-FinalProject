@@ -2,11 +2,14 @@
 A BST that organizes the movies by the release date.
 */
 
-package structures;
+package mainStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class MoviesByDate implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private Movie root;
     private int count = 10000;
 

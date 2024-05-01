@@ -1,19 +1,32 @@
-package managers;
-
-import structures.*;
+package mainStructures;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Scanner;
 
-public class ImportManager {
-    private MovieManager movieManager;
+public class ImportManager implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
+//    private MovieManager movieManager;
+
+    private MoviesByID moviesByID;
+    private MoviesByDate moviesByDate;
+    private MovieScoresHeap movieScoresHeap;
     private CustomerStorage customers;
 
-    public ImportManager(MovieManager movieManager, CustomerStorage customers) {
-        this.movieManager = movieManager;
+    //    public ImportManager(MovieManager movieManager, CustomerStorage customers) {
+//        this.movieManager = movieManager;
+//        this.customers = customers;
+//    }
+    public ImportManager(MoviesByID moviesByID, MoviesByDate moviesByDate, MovieScoresHeap movieScoresHeap, CustomerStorage customers) {
+        this.moviesByID = moviesByID;
+        this.moviesByDate = moviesByDate;
+        this.movieScoresHeap = movieScoresHeap;
         this.customers = customers;
     }
+
     public void importMoviesFromCSV() {
         try {
             Scanner input = new Scanner(new File("seed/movieSeedCSV.csv"));
@@ -22,11 +35,13 @@ public class ImportManager {
             while (input.hasNext()) {
                 String title = input.next().trim();
                 int releaseDate = Integer.parseInt(input.next().trim());
-                int id = movieManager.getMoviesByDate().getCount() + 1;
+                int id = moviesByDate.getCount() + 1;
                 int score = Integer.parseInt(input.next().trim());
                 boolean availability = Integer.parseInt(input.next().trim()) == 1;
                 Movie movie = new Movie(title, releaseDate, id, score, availability);
-                movieManager.insert(movie);
+                moviesByDate.insertMovieByDate(movie);
+                moviesByID.insertMovieByID(movie);
+                movieScoresHeap.insertMovie(movie);
             }
             input.close();
         } catch (FileNotFoundException e) {

@@ -3,11 +3,14 @@ Customer storage to store the customers by their credit card numbers.
 This is a dictionary implemented with the separate chaining method
  */
 
-package structures;
+package mainStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class CustomerStorage implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private Customer[] customers;
     private final int size = 31;  // We determined the size here in order to easily modify the program
 

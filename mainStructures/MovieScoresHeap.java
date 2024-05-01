@@ -2,11 +2,14 @@
 A movie scores heap that keeps track of the lowest scored movie
 */
 
-package structures;
+package mainStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class MovieScoresHeap implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private Movie[] moviesByScore;
     private final int size = 255;  // We initialized size here for better modification and readability
     private int movieCount;
@@ -69,18 +72,6 @@ public class MovieScoresHeap implements Serializable {
         }
         movieCount += 1;
         return true;
-    }
-
-    public boolean isEmpty() {
-        // Function that checks if the movie heap is empty
-        return movieCount == 0;
-    }
-
-    public void printMovies() {
-        for (int i = 0; i < movieCount; i++) {
-            System.out.print("|" + moviesByScore[i].getScore() + "|");
-        }
-        System.out.println();
     }
 
     private int getParent(int child) {

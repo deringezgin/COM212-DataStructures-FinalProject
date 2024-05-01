@@ -5,11 +5,14 @@ It has a next pointer for the implementation of the Have Watched list of the use
 It has left and right pointers for both their IDs and Dates which are used to create separate BSTs.
  */
 
-package structures;
+package mainStructures;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Movie implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 12345678910L;
     private String title;
     private int releaseDate;
     private int ID;
