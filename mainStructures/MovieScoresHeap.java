@@ -4,11 +4,9 @@ A movie scores heap that keeps track of the lowest scored movie
 
 package mainStructures;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class MovieScoresHeap implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
     private Movie[] moviesByScore;
     private final int size = 255;  // We initialized size here for better modification and readability

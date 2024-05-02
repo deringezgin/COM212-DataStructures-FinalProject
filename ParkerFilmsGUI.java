@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 public class ParkerFilmsGUI implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
     private static final Font titleFont = new Font("Verdana", Font.BOLD, 40);
     private static final Font textFont = new Font("Verdana", Font.PLAIN, 20);

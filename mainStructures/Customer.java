@@ -7,11 +7,9 @@ It has a next pointer to use in the customer dictionary which we implemented usi
 
 package mainStructures;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class Customer implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
     private String name;
     private String email;

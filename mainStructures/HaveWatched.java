@@ -4,12 +4,10 @@ Have watched list for customers that we implemented using a linked-list
 
 package mainStructures;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class HaveWatched implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
     private Movie head;
 

@@ -4,11 +4,9 @@ A BST that organizes the movies by the ID.
 
 package mainStructures;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class MoviesByID implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
     private Movie root;
 

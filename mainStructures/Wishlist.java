@@ -5,11 +5,9 @@ We used a queue to implement this functionality
 
 package mainStructures;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class Wishlist implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
     private Movie[] wishList;
     private int filmCount;

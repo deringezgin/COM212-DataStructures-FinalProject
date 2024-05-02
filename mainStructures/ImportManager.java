@@ -2,12 +2,10 @@ package mainStructures;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.Scanner;
 
 public class ImportManager implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
 //    private MovieManager movieManager;
 

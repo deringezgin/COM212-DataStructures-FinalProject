@@ -7,11 +7,9 @@ It has left and right pointers for both their IDs and Dates which are used to cr
 
 package mainStructures;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 public class Movie implements Serializable {
-    @Serial
     private static final long serialVersionUID = 12345678910L;
     private String title;
     private int releaseDate;
