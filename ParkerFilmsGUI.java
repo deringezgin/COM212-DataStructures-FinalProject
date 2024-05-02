@@ -270,8 +270,8 @@ public class ParkerFilmsGUI implements Serializable {
                 // Adding the buttons
                 JButton removeButton = new JButton("Remove the Movie");
                 JButton backButton = new JButton("Go Back");
-                removeButton.setFont(textFont);
-                backButton.setFont(textFont);
+                removeButton.setFont(buttonFont);
+                backButton.setFont(buttonFont);
 
                 // Action listener for removeButton
                 removeButton.addActionListener(e -> {
@@ -288,8 +288,9 @@ public class ParkerFilmsGUI implements Serializable {
 
                 // Adding the buttons to the screen
                 JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // Center align the buttons
-                buttonPanel.add(removeButton);
                 buttonPanel.add(backButton);
+                buttonPanel.add(removeButton);
+
                 buttonPanel.setBackground(panel.getBackground());
                 panel.add(buttonPanel, BorderLayout.SOUTH);
             } else {
@@ -522,10 +523,15 @@ public class ParkerFilmsGUI implements Serializable {
 
                     Object id = table.getValueAt(table.getSelectedRow(), 2); // Getting the id of the selected row (ID of the movie)
                     addToWatchedButton.addActionListener(e1 -> {  // Adding the selected movie to the watched list by id
+
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
-                        customer.getWatchedList().insertMovie(movieToAdd);
-                        JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Have Watched.");
-                        saveData();
+                        if (customer.getWatchedList().searchMovieByID(movieToAdd.getID()) == null) {
+                            customer.getWatchedList().insertMovie(movieToAdd);
+                            JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Have Watched.");
+                            saveData();
+                        } else {
+                            JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " is already in the have watched list");
+                        }
                         table.clearSelection();
                         viewByReleaseDateCustomer(customer);
                     });
@@ -917,15 +923,15 @@ public class ParkerFilmsGUI implements Serializable {
             JLabel availabilityLabel = new JLabel("Availability", JLabel.RIGHT);
             JLabel availabilityText = new JLabel("" + leastRated.getAvailability(), JLabel.CENTER);
             titleLabel.setFont(boldSubTitleFont);  // Setting the font
-            titleText.setFont(subTitleFont);
+            titleText.setFont(textFont);
             releaseDateLabel.setFont(boldSubTitleFont);
-            releaseDateText.setFont(subTitleFont);
+            releaseDateText.setFont(textFont);
             idLabel.setFont(boldSubTitleFont);
-            idText.setFont(subTitleFont);
+            idText.setFont(textFont);
             ratingLabel.setFont(boldSubTitleFont);
-            ratingText.setFont(subTitleFont);
+            ratingText.setFont(textFont);
             availabilityLabel.setFont(boldSubTitleFont);
-            availabilityText.setFont(subTitleFont);
+            availabilityText.setFont(textFont);
             movieInfoPanel.add(titleLabel);  // Adding the elements to the panel
             movieInfoPanel.add(titleText);
             movieInfoPanel.add(releaseDateLabel);
