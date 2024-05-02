@@ -1688,7 +1688,7 @@ public class ParkerFilmsGUI implements Serializable {
 
         // Creating the window
         JFrame frame = new JFrame("Custom Window");
-        frame.setSize(800, 600);
+        frame.setSize(1200, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Create a panel to store the application
