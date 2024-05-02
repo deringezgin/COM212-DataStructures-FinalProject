@@ -147,7 +147,7 @@ public class ParkerFilmsGUI implements Serializable {
             movieIdField.setText("");
             if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
                 int movieIDInt = Integer.parseInt(movieId);
-                Movie foundMovie = customer.getWatchedList().searchMovieByID(movieIDInt);
+                Movie foundMovie = moviesByID.searchMovieByID(movieIDInt);
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
