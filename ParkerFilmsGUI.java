@@ -1314,7 +1314,7 @@ public class ParkerFilmsGUI implements Serializable {
         adminLoginButton.setFont(buttonFont);
         newCustomerButton.setFont(buttonFont);
         quitButton.setFont(buttonFont);
-        Dimension buttonSize = new Dimension(175, 70);
+        Dimension buttonSize = new Dimension(200, 70);
         customerLoginButton.setPreferredSize(buttonSize);
         adminLoginButton.setPreferredSize(buttonSize);
         newCustomerButton.setPreferredSize(buttonSize);
@@ -1324,11 +1324,11 @@ public class ParkerFilmsGUI implements Serializable {
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setBackground(panel.getBackground());  // Matching the background color
         buttonPanel.add(customerLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(5));  // Adding space between buttons
+        buttonPanel.add(Box.createHorizontalStrut(10));  // Adding space between buttons
         buttonPanel.add(adminLoginButton);
-        buttonPanel.add(Box.createHorizontalStrut(5));  // Adding space between buttons
+        buttonPanel.add(Box.createHorizontalStrut(10));  // Adding space between buttons
         buttonPanel.add(newCustomerButton);
-        buttonPanel.add(Box.createHorizontalStrut(5));  // Adding space between buttons
+        buttonPanel.add(Box.createHorizontalStrut(10));  // Adding space between buttons
         buttonPanel.add(quitButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);  // Adding the button panel to the bottom of the panel
