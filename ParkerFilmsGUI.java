@@ -15,6 +15,7 @@ public class ParkerFilmsGUI implements Serializable {
     private static final Font buttonFont = new Font("Verdana", Font.BOLD, 20);
     private static final Font subTitleFont = new Font("Verdana", Font.PLAIN, 30);
     private static final Font boldSubTitleFont = new Font("Verdana", Font.BOLD, 30);
+    public static final Color VERY_LIGHT_BLUE = new Color(40,165,255);
     private CustomerStorage customers;
     private Wishlist wishlist;
     private HaveWatched haveWatched;
@@ -1693,7 +1694,7 @@ public class ParkerFilmsGUI implements Serializable {
         // Create a panel to store the application
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY);
+        panel.setBackground(VERY_LIGHT_BLUE);
         panel.setBorder(BorderFactory.createEmptyBorder(50, 20, 20, 20));
         filmManager.setPanel(panel);
 
