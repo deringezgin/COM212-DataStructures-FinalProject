@@ -1,10 +1,10 @@
-/*
-A movie scores heap that keeps track of the lowest scored movie
-*/
-
 package mainStructures;
 
 import java.io.Serializable;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// A movie scores heap that keeps track of the lowest scored movie
 
 public class MovieScoresHeap implements Serializable {
     private static final long serialVersionUID = 12345678910L;

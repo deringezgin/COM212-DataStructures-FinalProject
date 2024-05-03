@@ -1,11 +1,11 @@
-/*
-Have watched list for customers that we implemented using a linked-list
- */
-
 package mainStructures;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Have watched list for customers that we implemented using a linked-list
 
 public class HaveWatched implements Serializable {
     private static final long serialVersionUID = 12345678910L;

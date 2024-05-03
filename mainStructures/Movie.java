@@ -1,13 +1,13 @@
-/*
-Movie class that creates a Movie Node.
-A movie Node has the usual variables: title, release date, ID, score and availability
-It has a next pointer for the implementation of the Have Watched list of the users. (It's a linked list)
-It has left and right pointers for both their IDs and Dates which are used to create separate BSTs.
- */
-
 package mainStructures;
 
 import java.io.Serializable;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Movie class that creates a Movie Node.
+// A movie Node has the usual variables: title, release date, ID, score and availability
+// It has a next pointer for the implementation of the Have Watched list of the users. (It's a linked list)
+// It has left and right pointers for both their IDs and Dates which are used to create separate BSTs.
 
 public class Movie implements Serializable {
     private static final long serialVersionUID = 12345678910L;
@@ -161,16 +161,4 @@ public class Movie implements Serializable {
         }
         return monthString + " " + day + ", " + year;
     }
-
-//    @Overrides
-//    public String toString() {
-//        // Function to print the movie
-//        return "\nMOVIE DETAILS" +
-//                "\nTitle of the movie: " + this.title +
-//                "\nRelease Date: " + convertToDate() +
-//                "\nID of the movie: " + this.ID +
-//                "\nScore of the movie: " + this.score +
-//                "\nAvailability: " + this.availability +
-//                "\nAddress: " + this;
-//    }
 }

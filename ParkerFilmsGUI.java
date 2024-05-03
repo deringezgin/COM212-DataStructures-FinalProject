@@ -7,6 +7,11 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Main Program to run the GUI. It has different functions for the different windows of the program.
+// Run the main function to start
+
 public class ParkerFilmsGUI implements Serializable {
     private static final long serialVersionUID = 12345678910L;
     private static final Font titleFont = new Font("Verdana", Font.BOLD, 40);
@@ -628,7 +633,7 @@ public class ParkerFilmsGUI implements Serializable {
             movieIdField.setText("");
             if (intValidation(movieId, 10000, 99999)) {  // Checking if the input is a valid integer in the range
                 int movieIDInt = Integer.parseInt(movieId);
-                Movie foundMovie = moviesByID.searchMovieByID(movieIDInt);
+                Movie foundMovie = customer.getWatchedList().searchMovieByID(movieIDInt);
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
@@ -671,7 +676,7 @@ public class ParkerFilmsGUI implements Serializable {
 
             if (intValidation(movieDate, 10000101, 99999999)) {  // Checking if the input is a valid integer in the range
                 int movieDateInt = Integer.parseInt(movieDate);
-                Movie foundMovie = moviesByDate.searchMovieByDate(movieDateInt);
+                Movie foundMovie = customer.getWatchedList().searchMovieByDate(movieDateInt);
                 if (foundMovie != null) {  // If the movie is found, update the text fields and show the details
                     movieTitleLabel.setText("Title: " + foundMovie.getTitle());
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());

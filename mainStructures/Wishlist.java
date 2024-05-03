@@ -1,11 +1,11 @@
-/*
-Wishlist to keep track of the last 20 movies that the user watched.
-We used a queue to implement this functionality
-*/
-
 package mainStructures;
 
 import java.io.Serializable;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Wishlist to keep track of the last 20 movies that the user watched.
+// We used a queue to implement this functionality
 
 public class Wishlist implements Serializable {
     private static final long serialVersionUID = 12345678910L;

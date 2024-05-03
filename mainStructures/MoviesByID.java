@@ -1,10 +1,10 @@
-/*
-A BST that organizes the movies by the ID.
-*/
-
 package mainStructures;
 
 import java.io.Serializable;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// A BST that organizes the movies by the ID.
 
 public class MoviesByID implements Serializable {
     private static final long serialVersionUID = 12345678910L;

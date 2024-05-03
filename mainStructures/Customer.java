@@ -1,13 +1,13 @@
-/*
-Customer Node for creating individual customers
-It stores the simple customer info: name, credit card number, email
-It has a wishlist and a have-watched list
-It has a next pointer to use in the customer dictionary which we implemented using separate chaining
- */
-
 package mainStructures;
 
 import java.io.Serializable;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Customer Node for creating individual customers
+// It stores the simple customer info: name, credit card number, email
+// It has a wishlist and a have-watched list
+// It has a next pointer to use in the customer dictionary which we implemented using separate chaining
 
 public class Customer implements Serializable {
     private static final long serialVersionUID = 12345678910L;

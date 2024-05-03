@@ -5,19 +5,18 @@ import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.Scanner;
 
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Import manager to read the .csv seed files
+
 public class ImportManager implements Serializable {
     private static final long serialVersionUID = 12345678910L;
-//    private MovieManager movieManager;
 
     private MoviesByID moviesByID;
     private MoviesByDate moviesByDate;
     private MovieScoresHeap movieScoresHeap;
     private CustomerStorage customers;
 
-    //    public ImportManager(MovieManager movieManager, CustomerStorage customers) {
-//        this.movieManager = movieManager;
-//        this.customers = customers;
-//    }
     public ImportManager(MoviesByID moviesByID, MoviesByDate moviesByDate, MovieScoresHeap movieScoresHeap, CustomerStorage customers) {
         this.moviesByID = moviesByID;
         this.moviesByDate = moviesByDate;

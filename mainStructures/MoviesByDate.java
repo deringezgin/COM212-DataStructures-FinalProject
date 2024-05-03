@@ -1,10 +1,10 @@
-/*
-A BST that organizes the movies by the release date.
-*/
-
 package mainStructures;
 
 import java.io.Serializable;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// A BST that organizes the movies by the release date.
 
 public class MoviesByDate implements Serializable {
     private static final long serialVersionUID = 12345678910L;
@@ -119,54 +119,6 @@ public class MoviesByDate implements Serializable {
             return searcher(movie.getLeftDateMovie(), movieDate);
         } else {
             return searcher(movie.getRightDateMovie(), movieDate);
-        }
-    }
-
-    public void printAscendingDate() {
-        // Printing the movies with the ascending date order
-        ascend(root);
-        System.out.println();
-    }
-
-    private void ascend(Movie x) {
-        if (x != null) {
-            ascend(x.getLeftDateMovie());
-            System.out.println(x);
-            ascend(x.getRightDateMovie());
-        }
-    }
-
-    public void printDescendingDate() {
-        // Printing movies with the descending date order
-        descend(root);
-        System.out.println();
-    }
-
-    private void descend(Movie x) {
-        if (x != null) {
-            ascend(x.getRightDateMovie());
-            System.out.print(x.getReleaseDate() + " ");
-            ascend(x.getLeftDateMovie());
-        }
-    }
-
-    public void printTree() {
-        // Printing the movies by date tree
-        printTree2(root);
-        System.out.println();
-    }
-
-    private void printTree2(Movie tree) {
-        if (tree != null) {
-            System.out.print(tree.getReleaseDate() + " ");
-            if (tree.getLeftDateMovie() != null)
-                System.out.print("Left: " + tree.getLeftDateMovie().getReleaseDate() + " ");
-            else System.out.print("Left: null ");
-            if (tree.getRightDateMovie() != null)
-                System.out.println("Right: " + tree.getRightDateMovie().getReleaseDate() + " ");
-            else System.out.println("Right: null ");
-            printTree2(tree.getLeftDateMovie());
-            printTree2(tree.getRightDateMovie());
         }
     }
 

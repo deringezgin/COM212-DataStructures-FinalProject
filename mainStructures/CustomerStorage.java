@@ -1,11 +1,11 @@
-/*
-Customer storage to store the customers by their credit card numbers.
-This is a dictionary implemented with the separate chaining method
- */
-
 package mainStructures;
 
 import java.io.Serializable;
+
+// COM212 Data Structures | Spring 2024 | Final Project
+// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Customer storage to store the customers by their credit card numbers.
+// This is a dictionary implemented with the separate chaining method
 
 public class CustomerStorage implements Serializable {
     private static final long serialVersionUID = 12345678910L;
@@ -68,28 +68,6 @@ public class CustomerStorage implements Serializable {
             temp = temp.getNextCustomer();
         }
         temp.setNextCustomer(newCustomer);
-    }
-
-    public void printCustomers() {
-        // Function to print the customers credit-card numbers
-        for (int i = 0; i < size; i++) {
-            System.out.print("|" + i + "|");
-            System.out.print(" - ");
-            if (customers[i] == null) {
-                System.out.print("null");
-            } else {
-                Customer temp = customers[i];
-                while (temp != null) {
-                    System.out.print(temp.getCredit());
-                    temp = temp.getNextCustomer();
-                    System.out.print(" --> ");
-                    if (temp == null) {
-                        System.out.print("null");
-                    }
-                }
-            }
-            System.out.println();
-        }
     }
 
     private int hash(int key) {
