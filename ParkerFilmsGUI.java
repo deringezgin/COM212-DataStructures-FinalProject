@@ -15,7 +15,7 @@ public class ParkerFilmsGUI implements Serializable {
     private static final Font buttonFont = new Font("Verdana", Font.BOLD, 20);
     private static final Font subTitleFont = new Font("Verdana", Font.PLAIN, 30);
     private static final Font boldSubTitleFont = new Font("Verdana", Font.BOLD, 30);
-    public static final Color VERY_LIGHT_BLUE = new Color(40,165,255);
+    public static final Color VERY_LIGHT_BLUE = new Color(40, 165, 255);
     private CustomerStorage customers;
     private Wishlist wishlist;
     private HaveWatched haveWatched;
@@ -45,19 +45,22 @@ public class ParkerFilmsGUI implements Serializable {
         JButton accessWishlist = new JButton("Access Wishlist");
         JButton accessHaveWatched = new JButton("Access the Watched Movies List");
         JButton printMoviesByDate = new JButton("View the movies in order of release date");
+        JButton changeCustomerPassword = new JButton("Edit Customer Information");
         JButton goMainMenu = new JButton("Logout to the main menu");
         accessMoviesByID.setFont(boldTextFont);  // Setting the textFont
         accessWishlist.setFont(boldTextFont);
         printMoviesByDate.setFont(boldTextFont);
         goMainMenu.setFont(boldTextFont);
+        changeCustomerPassword.setFont(boldTextFont);
         accessHaveWatched.setFont(boldTextFont);
         JPanel buttonPanel = new JPanel();  // Creating a panel for storing the buttons
         buttonPanel.setBackground(panel.getBackground());  // Using the parent background
-        buttonPanel.setLayout(new GridLayout(5, 1, 0, 0));
+        buttonPanel.setLayout(new GridLayout(6, 1, 0, 0));
         buttonPanel.add(accessMoviesByID);
         buttonPanel.add(accessWishlist);
         buttonPanel.add(accessHaveWatched);
         buttonPanel.add(printMoviesByDate);
+        buttonPanel.add(changeCustomerPassword);
         buttonPanel.add(goMainMenu);
         panel.add(buttonPanel, BorderLayout.CENTER);
 
@@ -72,6 +75,8 @@ public class ParkerFilmsGUI implements Serializable {
 
         // If the button is clicked, run the method that creates the screen that prints the movies by release date
         printMoviesByDate.addActionListener(e -> viewByReleaseDateCustomer(customer));
+
+        changeCustomerPassword.addActionListener(e -> editCustomerInformation(customer));
 
         // If the button is clicked, it returns to the main menu.
         goMainMenu.addActionListener(e -> loginMenu("Customer"));
@@ -707,6 +712,93 @@ public class ParkerFilmsGUI implements Serializable {
         panel.revalidate();
         panel.repaint();
 
+    }
+
+    private void editCustomerInformation(Customer customer) {
+        // Function to create a new customer in our program
+        panel.removeAll();  // Clear the panel
+
+        // Main title of the page
+        JLabel loginTitleLabel = new JLabel("Edit Customer Information", JLabel.CENTER);
+        loginTitleLabel.setFont(titleFont);
+        panel.add(loginTitleLabel, BorderLayout.NORTH);
+
+
+        JPanel loginPanel = new JPanel(new GridLayout(5, 1, 20, 20));
+        loginPanel.setBackground(panel.getBackground());  // Getting the background color of the main panel
+
+        // Creating labels and text-fields for our program
+        JLabel nameLabel = new JLabel("Name Surname", JLabel.RIGHT);
+        JLabel emailLabel = new JLabel("Email Address", JLabel.RIGHT);
+        JLabel passwordLabel = new JLabel("Password", JLabel.RIGHT);
+        JTextField nameField = new JTextField();
+        nameField.setText(customer.getName());
+        JTextField emailField = new JTextField();
+        emailField.setText(customer.getEmail());
+        JPasswordField passwordField = new JPasswordField();
+        passwordField.setText(customer.getPassword());
+        JButton submitButton = new JButton("Submit");
+        JButton backButton = new JButton("Go Back");
+        nameLabel.setFont(boldTextFont);
+        nameField.setFont(textFont);
+        emailLabel.setFont(boldTextFont);
+        emailField.setFont(textFont);
+        passwordLabel.setFont(boldTextFont);
+        passwordField.setFont(textFont);
+        submitButton.setFont(buttonFont);
+        backButton.setFont(buttonFont);
+        Dimension buttonSize = new Dimension(150, 50);  // Setting button size
+        submitButton.setPreferredSize(buttonSize);
+        backButton.setPreferredSize(buttonSize);
+
+        panel.add(Box.createVerticalStrut(20), BorderLayout.CENTER);  // Setting spacing
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());  // Button panel for storing the buttons
+        buttonPanel.setBackground(panel.getBackground());
+        buttonPanel.add(submitButton);
+        buttonPanel.add(Box.createHorizontalStrut(60));
+        buttonPanel.add(backButton);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Adding the fileds on the panel and adding the panel to the screen
+        loginPanel.add(nameLabel);
+        loginPanel.add(nameField);
+        loginPanel.add(emailLabel);
+        loginPanel.add(emailField);
+        loginPanel.add(passwordLabel);
+        loginPanel.add(passwordField);
+        loginPanel.add(backButton);
+        loginPanel.add(submitButton);
+        panel.add(loginPanel, BorderLayout.CENTER);
+
+        submitButton.addActionListener(e -> {
+            // When submit button is clicked...
+            // Getting the text in the fields
+            String username = nameField.getText();
+            String email = emailField.getText();
+            String credit = String.valueOf(customer.getCredit());
+            String password = new String(passwordField.getPassword());
+
+            // Validating the input of the customer
+            boolean valid = newCustomerValidation(username, email, credit, password);
+            if (valid) {  // If it's valid, creates a new customer, shows a message and moves to the login menu
+                customer.setName(username);
+                customer.setEmail(email);
+                customer.setPassword(password);
+                saveData();
+                JOptionPane.showMessageDialog(panel, "Customer information is changed");
+                customerMenu(customer);
+            } else {  // if it's not valid, shows another message
+                JOptionPane.showMessageDialog(panel, "Invalid credentials.\nCheck that you entered a valid email and your credit card is a 4 digit integer.\nAlso be sure that you filled all of the fields.");
+            }
+        });
+
+        // If the back button is clicked, removes everything and returns to the welcome menu.
+        backButton.addActionListener(e -> customerMenu(customer));
+
+        // Update the panel
+        panel.revalidate();
+        panel.repaint();
     }
 
     private static void getAscendingDateCustomer(MoviesByDate DateBST, DefaultTableModel tableModel) {
