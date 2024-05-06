@@ -29,6 +29,8 @@ public class ParkerFilmsGUI implements Serializable {
     private MoviesByDate moviesByDate;
     private JPanel panel;
 
+    private JFrame frame;
+
     public ParkerFilmsGUI() {
         // Loading data
         loadData();
@@ -39,6 +41,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void customerMenu(Customer customer) {
         // Customer menu that has the different options for the customer
         panel.removeAll();  // Clear the screen
+        frame.setTitle(customer.getName() + " - Customer Menu");
 
         // Setting the title of the windwo
         JLabel adminTitleLabel = new JLabel("Welcome Back " + customer.getName(), JLabel.CENTER);
@@ -93,6 +96,7 @@ public class ParkerFilmsGUI implements Serializable {
 
     private void accessMoviesByIDorReleaseDateCustomer(Customer customer) {
         panel.removeAll();  // Clearing the screen
+        frame.setTitle(customer.getName() + " - Access Movies by ID or Release Date");
 
         // Title label
         JLabel titleLabel = new JLabel("Access Movies By ID or Release Date", JLabel.CENTER);
@@ -164,7 +168,7 @@ public class ParkerFilmsGUI implements Serializable {
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
                     movieRatingLabel.setText("Rating: " + foundMovie.getScore());
                     movieIDLabel.setText("ID: " + foundMovie.getID());
-                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(addHaveWatchedButton);
 
@@ -206,7 +210,7 @@ public class ParkerFilmsGUI implements Serializable {
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
                     movieRatingLabel.setText("Rating: " + foundMovie.getScore());
                     movieIDLabel.setText("ID: " + foundMovie.getID());
-                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(addHaveWatchedButton);
 
@@ -245,6 +249,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void accessWishlist(Customer customer) {
         // Function to remove the least rated movie from the system
         panel.removeAll();  // Clearing the screen
+        frame.setTitle(customer.getName() + " - Access Wishlist");
 
         // Setting up the screen title
         JLabel leastRatedTitleLabel = new JLabel("Access Wishlist", JLabel.CENTER);
@@ -263,7 +268,7 @@ public class ParkerFilmsGUI implements Serializable {
             JLabel releaseDateLabel = new JLabel("Release Date: " + firstMovie.convertToDate(), JLabel.CENTER);
             JLabel idLabel = new JLabel("ID: " + firstMovie.getID(), JLabel.CENTER);
             JLabel ratingLabel = new JLabel("Rating: " + firstMovie.getScore(), JLabel.CENTER);
-            JLabel availabilityLabel = new JLabel("Availability: " + firstMovie.getAvailability(), JLabel.CENTER);
+            JLabel availabilityLabel = new JLabel("Availability: " + getAvailabilityText(firstMovie.getAvailability()), JLabel.CENTER);
             titleLabel.setFont(boldSubTitleFont);  // Setting the font
             releaseDateLabel.setFont(boldSubTitleFont);
             idLabel.setFont(boldSubTitleFont);
@@ -335,6 +340,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void accessHaveWatched(Customer customer) {
         // Function to print the movies by release date on the screen
         panel.removeAll();  // Clearing the screen
+        frame.setTitle(customer.getName() + " - Access Have Watched");
 
         // Adding the title label
         JLabel titleLabel = new JLabel("Customer Have Watched List", JLabel.CENTER);
@@ -453,6 +459,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void viewByReleaseDateCustomer(Customer customer) {
         // Function to print the movies by release date on the screen
         panel.removeAll();  // Clearing the screen
+        frame.setTitle(customer.getName() + " - View Movies by Release Date");
 
         // Adding the title label
         JLabel titleLabel = new JLabel("Movies by Release Date", JLabel.CENTER);
@@ -568,6 +575,7 @@ public class ParkerFilmsGUI implements Serializable {
 
     private void searchInHaveWatched(Customer customer) {
         panel.removeAll();  // Clearing the screen
+        frame.setTitle(customer.getName() + " - Search in Have Watched");
 
         // Title label
         JLabel titleLabel = new JLabel("Search Movies By ID or Release Date", JLabel.CENTER);
@@ -639,7 +647,7 @@ public class ParkerFilmsGUI implements Serializable {
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
                     movieRatingLabel.setText("Rating: " + foundMovie.getScore());
                     movieIDLabel.setText("ID: " + foundMovie.getID());
-                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(removeFromHaveWatched);
 
@@ -682,7 +690,7 @@ public class ParkerFilmsGUI implements Serializable {
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
                     movieRatingLabel.setText("Rating: " + foundMovie.getScore());
                     movieIDLabel.setText("ID: " + foundMovie.getID());
-                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(removeFromHaveWatched);
 
@@ -722,6 +730,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void editCustomerInformation(Customer customer) {
         // Function to create a new customer in our program
         panel.removeAll();  // Clear the panel
+        frame.setTitle(customer.getName() + " - Edit Customer Information");
 
         // Main title of the page
         JLabel loginTitleLabel = new JLabel("Edit Customer Information", JLabel.CENTER);
@@ -817,7 +826,7 @@ public class ParkerFilmsGUI implements Serializable {
         if (currentMovie != null) {
             ascendCustomer(currentMovie.getRightDateMovie(), tableModel);
             if (currentMovie.getAvailability()) {
-                Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
+                Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), getAvailabilityText(currentMovie.getAvailability())};
                 tableModel.addRow(rowData);
             }
             ascendCustomer(currentMovie.getLeftDateMovie(), tableModel);
@@ -827,7 +836,7 @@ public class ParkerFilmsGUI implements Serializable {
     private static void getCustomerHaveWatched(HaveWatched haveWatched, DefaultTableModel tableModel) {
         Movie currentMovie = haveWatched.getHead();
         while (currentMovie != null) {
-            Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
+            Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), getAvailabilityText(currentMovie.getAvailability())};
             tableModel.addRow(rowData);
             currentMovie = currentMovie.getNextMovie();
         }
@@ -840,6 +849,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void adminMenu() {
         // Creating the admin menu
         panel.removeAll();  // Clearing the screen
+        frame.setTitle("Admin Menu");
 
         // Creating the main title
         JLabel adminTitleLabel = new JLabel("Admin Menu", JLabel.CENTER);
@@ -884,12 +894,7 @@ public class ParkerFilmsGUI implements Serializable {
 
         accessMoviesByIDorDate.addActionListener(e -> accessMoviesByIDorReleaseDateAdmin());
 
-        returnToSeedButton.addActionListener(e -> {
-            returnToSeed();
-            JOptionPane.showMessageDialog(panel, "Program is reset to the seed");
-            panel.removeAll();
-            welcomeMenu();
-        });
+        returnToSeedButton.addActionListener(e -> returnToSeed());
 
         // Calls the function that will return to the main admin menu
         goMainMenu.addActionListener(e -> loginMenu("Admin"));
@@ -902,6 +907,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void addNewMovie() {
         // Function that creates the interface for creating new movies
         panel.removeAll();  // Clearing the scree
+        frame.setTitle("Add a New Movie");
 
         // Creating the title
         JLabel loginTitleLabel = new JLabel("New Movie Creation", JLabel.CENTER);
@@ -995,6 +1001,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void removeLeastRated() {
         // Function to remove the least rated movie from the system
         panel.removeAll();  // Clearing the screen
+        frame.setTitle("Least Rated Movie in the System");
 
         // Setting up the screen title
         JLabel leastRatedTitleLabel = new JLabel("Least Rated Movie", JLabel.CENTER);
@@ -1018,7 +1025,7 @@ public class ParkerFilmsGUI implements Serializable {
             JLabel ratingLabel = new JLabel("Rating", JLabel.RIGHT);
             JLabel ratingText = new JLabel("" + leastRated.getScore(), JLabel.CENTER);
             JLabel availabilityLabel = new JLabel("Availability", JLabel.RIGHT);
-            JLabel availabilityText = new JLabel("" + leastRated.getAvailability(), JLabel.CENTER);
+            JLabel availabilityText = new JLabel(getAvailabilityText(leastRated.getAvailability()), JLabel.CENTER);
             titleLabel.setFont(boldSubTitleFont);  // Setting the font
             titleText.setFont(textFont);
             releaseDateLabel.setFont(boldSubTitleFont);
@@ -1106,6 +1113,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void viewByReleaseDateAdmin() {
         // Function to print the movies by release date on the screen
         panel.removeAll();  // Clearing the screen
+        frame.setTitle("Admin - View Movies by Release Date");
 
         // Adding the title label
         JLabel titleLabel = new JLabel("Movies by Release Date", JLabel.CENTER);
@@ -1220,6 +1228,7 @@ public class ParkerFilmsGUI implements Serializable {
 
     private void accessMoviesByIDorReleaseDateAdmin() {
         panel.removeAll();  // Clearing the screen
+        frame.setTitle("Admin - Access Movies By ID or Release Date");
 
         // Title label
         JLabel titleLabel = new JLabel("Access Movies By ID or Release Date", JLabel.CENTER);
@@ -1299,7 +1308,7 @@ public class ParkerFilmsGUI implements Serializable {
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
                     movieRatingLabel.setText("Rating: " + foundMovie.getScore());
                     movieIDLabel.setText("ID: " + foundMovie.getID());
-                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
 
                     if (foundMovie.getAvailability()) {
                         setAsUnavailableButton.setVisible(true);
@@ -1307,7 +1316,7 @@ public class ParkerFilmsGUI implements Serializable {
 
                     setAsUnavailableButton.addActionListener(e1 -> {
                         foundMovie.setAvailability(false);
-                        movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                        movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
                         saveData();
                         JOptionPane.showMessageDialog(panel, "Movie Set to unavailable");
                         accessMoviesByIDorReleaseDateAdmin();
@@ -1336,7 +1345,7 @@ public class ParkerFilmsGUI implements Serializable {
                     movieReleaseDateLabel.setText("Release Date: " + foundMovie.convertToDate());
                     movieRatingLabel.setText("Rating: " + foundMovie.getScore());
                     movieIDLabel.setText("ID: " + foundMovie.getID());
-                    movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                    movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
 
                     if (foundMovie.getAvailability()) {
                         setAsUnavailableButton.setVisible(true);
@@ -1344,7 +1353,7 @@ public class ParkerFilmsGUI implements Serializable {
 
                     setAsUnavailableButton.addActionListener(e1 -> {
                         foundMovie.setAvailability(false);
-                        movieAvailabilityLabel.setText("Availability: " + foundMovie.getAvailability());
+                        movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
                         saveData();
                         JOptionPane.showMessageDialog(panel, "Movie Set to unavailable");
                         accessMoviesByIDorReleaseDateAdmin();
@@ -1368,11 +1377,21 @@ public class ParkerFilmsGUI implements Serializable {
     }
 
     private void returnToSeed() {
-        clearAllData();
-        loadData();
-        ImportManager importManager = new ImportManager(moviesByID, moviesByDate, movieScoresHeap, customers);
-        importManager.importAllData();
-        saveData();
+        // Show confirmation dialog
+        int dialogResult = JOptionPane.showConfirmDialog(panel, "Are you sure you want to reset the data to the seed? It will delete all changes.", "Confirm Reset", JOptionPane.YES_NO_OPTION);
+
+        // Check user's response
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            // User wanted to proceed
+            clearAllData();
+            loadData();
+            ImportManager importManager = new ImportManager(moviesByID, moviesByDate, movieScoresHeap, customers);
+            importManager.importAllData();
+            saveData();
+            JOptionPane.showMessageDialog(panel, "Data reset to seed successfully.", "Reset Done", JOptionPane.INFORMATION_MESSAGE);
+            panel.removeAll();
+            welcomeMenu();
+        }
     }
 
     private static void getAscendingDateAdmin(MoviesByDate DateBST, DefaultTableModel tableModel) {
@@ -1385,7 +1404,7 @@ public class ParkerFilmsGUI implements Serializable {
         // Recursive ascend function which will append the elements of the movie into an object and append it to the table
         if (currentMovie != null) {
             ascendAdmin(currentMovie.getRightDateMovie(), tableModel);
-            Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), currentMovie.getAvailability()};
+            Object[] rowData = {currentMovie.getTitle(), currentMovie.convertToDate(), currentMovie.getID(), currentMovie.getScore(), getAvailabilityText(currentMovie.getAvailability())};
             tableModel.addRow(rowData);
             ascendAdmin(currentMovie.getLeftDateMovie(), tableModel);
         }
@@ -1455,6 +1474,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void loginMenu(String userType) {
         // The login menu that can be used both for admin and the customer
         panel.removeAll();  // Clear the panel
+        frame.setTitle(userType + " Login");
 
         // Creating the page title using the input string
         JLabel loginTitleLabel = new JLabel(userType + " Login", JLabel.CENTER);
@@ -1542,6 +1562,7 @@ public class ParkerFilmsGUI implements Serializable {
     private void newCustomerMenu() {
         // Function to create a new customer in our program
         panel.removeAll();  // Clear the panel
+        frame.setTitle("Create New Customer");
 
         // Main title of the page
         JLabel loginTitleLabel = new JLabel("New Customer Creation", JLabel.CENTER);
@@ -1639,6 +1660,10 @@ public class ParkerFilmsGUI implements Serializable {
         this.panel = panel;
     }
 
+    private void setFrame(JFrame frame) {
+        this.frame = frame;
+    }
+
     private static boolean adminValidation(String username, String password) {
         return username.equals("admin") && password.equals("admin");
     }
@@ -1686,6 +1711,10 @@ public class ParkerFilmsGUI implements Serializable {
         // Performing validation in the new movie creation process.
         // Checks if the name field is not empty and the other fields are integers in the valid range
         return !movieName.isEmpty() && intValidation(releaseDate, 10000101, 99999999) && intValidation(rating, 0, 100) && intValidation(available, 0, 1);
+    }
+
+    private static String getAvailabilityText (boolean availability) {
+        return availability ? "Available" : "Unavailable";
     }
 
     private static void nodeChecker(MoviesByDate mbd, MoviesByID mbi, MovieScoresHeap msh) {
@@ -1784,9 +1813,10 @@ public class ParkerFilmsGUI implements Serializable {
         ParkerFilmsGUI filmManager = new ParkerFilmsGUI();
 
         // Creating the window
-        JFrame frame = new JFrame("Custom Window");
+        JFrame frame = new JFrame("Parker Films");
         frame.setSize(1200, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        filmManager.setFrame(frame);
 
         // Create a panel to store the application
         JPanel panel = new JPanel();
