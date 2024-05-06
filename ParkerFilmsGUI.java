@@ -1715,7 +1715,7 @@ public class ParkerFilmsGUI implements Serializable {
         return !movieName.isEmpty() && intValidation(releaseDate, 10000101, 99999999) && intValidation(rating, 0, 100) && intValidation(available, 0, 1);
     }
 
-    private static String getAvailabilityText (boolean availability) {
+    private static String getAvailabilityText(boolean availability) {
         return availability ? "Available" : "Unavailable";
     }
 
