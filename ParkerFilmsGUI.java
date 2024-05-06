@@ -184,7 +184,8 @@ public class ParkerFilmsGUI implements Serializable {
                         // If the have watched button is clicked, add the movie and update the have watched
                         customer.getWatchedList().insertMovie(foundMovie);
                         saveData();
-                        JOptionPane.showMessageDialog(panel, "Movie added to haveWatched");
+                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to haveWatched");
+                        accessMoviesByIDorReleaseDateCustomer(customer);
                     });
                 } else {
                     // If the movie is not found
@@ -226,7 +227,8 @@ public class ParkerFilmsGUI implements Serializable {
                         // If the have watched button is clicked, add the movie and update the have watched
                         customer.getWatchedList().insertMovie(foundMovie);
                         saveData();
-                        JOptionPane.showMessageDialog(panel, "Movie added to Watched List");
+                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Watched List");
+                        accessMoviesByIDorReleaseDateCustomer(customer);
                     });
                 } else {
                     // If the movie is not found
