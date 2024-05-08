@@ -301,10 +301,17 @@ public class ParkerFilmsGUI implements Serializable {
                 // Action listener for removeButton
                 removeButton.addActionListener(e -> {
                     // If the user choose to remove the least rated movie
+                    // Ask if they want to add it to the watched-list
                     Movie movie = customer.getWishlist().getFirstMovie();
                     customer.getWishlist().deleteFirstMovie();
                     saveData();
-                    JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.");
+                    int dialogResult = JOptionPane.showConfirmDialog(panel, "You're removing the movie from the wishlist. Would you like to add it to the have watched?", "Add to Watched-List", JOptionPane.YES_NO_OPTION);
+                    if (dialogResult == JOptionPane.YES_OPTION) {
+                        customer.getWatchedList().insertMovie(movie);
+                        JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.\nIt's added to the watched-list.");
+                    } else {
+                        JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.");
+                    }
                     accessWishlist(customer);
                 });
 
