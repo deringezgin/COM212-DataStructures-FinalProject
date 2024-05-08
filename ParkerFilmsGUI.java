@@ -155,6 +155,7 @@ public class ParkerFilmsGUI implements Serializable {
         backButton.setFont(buttonFont);
         backButton.addActionListener(e -> customerMenu(customer));
 
+        clearActionListener(searchButtonID);
         searchButtonID.addActionListener(e -> {
             // Search button that looks for a movie by id
             String movieId = movieIdField.getText();
@@ -172,6 +173,7 @@ public class ParkerFilmsGUI implements Serializable {
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(addHaveWatchedButton);
 
+                    clearActionListener(addWishlistButton);
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
                         if (customer.getWishlist().addMovie(foundMovie)) {
@@ -184,11 +186,16 @@ public class ParkerFilmsGUI implements Serializable {
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
 
+                    clearActionListener(addHaveWatchedButton);
                     addHaveWatchedButton.addActionListener(e1 -> {
                         // If the have watched button is clicked, add the movie and update the have watched
-                        customer.getWatchedList().insertMovie(foundMovie);
+                        if (customer.getWatchedList().searchMovieByID(movieIDInt) == null) {  // If the movie is not in the have watched
+                            customer.getWatchedList().insertMovie(foundMovie);
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to the Watched List");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " is already in the Watched List");
+                        }
                         saveData();
-                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to haveWatched");
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
                 } else {
@@ -201,6 +208,7 @@ public class ParkerFilmsGUI implements Serializable {
             }
         });
 
+        clearActionListener(searchButtonDate);
         searchButtonDate.addActionListener(e -> {
             // Search button that looks for a movie by id
             String movieDate = movieDateField.getText();
@@ -219,6 +227,7 @@ public class ParkerFilmsGUI implements Serializable {
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(addHaveWatchedButton);
 
+                    clearActionListener(addWishlistButton);
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
                         if (customer.getWishlist().addMovie(foundMovie)) {
@@ -231,11 +240,16 @@ public class ParkerFilmsGUI implements Serializable {
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
 
+                    clearActionListener(addHaveWatchedButton);
                     addHaveWatchedButton.addActionListener(e1 -> {
                         // If the have watched button is clicked, add the movie and update the have watched
-                        customer.getWatchedList().insertMovie(foundMovie);
+                        if (customer.getWatchedList().searchMovieByDate(movieDateInt) == null) {
+                            customer.getWatchedList().insertMovie(foundMovie);
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Watched List");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " is already in the Watched List");
+                        }
                         saveData();
-                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Watched List");
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
                 } else {
@@ -299,19 +313,24 @@ public class ParkerFilmsGUI implements Serializable {
                 backButton.setFont(buttonFont);
 
                 // Action listener for removeButton
+                clearActionListener(removeButton);
                 removeButton.addActionListener(e -> {
                     // If the user choose to remove the least rated movie
                     // Ask if they want to add it to the watched-list
                     Movie movie = customer.getWishlist().getFirstMovie();
                     customer.getWishlist().deleteFirstMovie();
-                    saveData();
                     int dialogResult = JOptionPane.showConfirmDialog(panel, "You're removing the movie from the wishlist. Would you like to add it to the have watched?", "Add to Watched-List", JOptionPane.YES_NO_OPTION);
                     if (dialogResult == JOptionPane.YES_OPTION) {
-                        customer.getWatchedList().insertMovie(movie);
-                        JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.\nIt's added to the watched-list.");
+                        if (customer.getWatchedList().searchMovieByID(movie.getID()) == null) {
+                            customer.getWatchedList().insertMovie(movie);
+                            JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.\nIt's added to the watched-list.");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.\nIt's already in the watched-list.");
+                        }
                     } else {
                         JOptionPane.showMessageDialog(panel, movie.getTitle() + " has been removed from customer wishlist.");
                     }
+                    saveData();
                     accessWishlist(customer);
                 });
 
@@ -444,6 +463,7 @@ public class ParkerFilmsGUI implements Serializable {
                     removeMovieButton.setVisible(true);
 
                     Object id = table.getValueAt(table.getSelectedRow(), 2); // Getting the id of the selected row (ID of the movie)
+                    clearActionListener(removeMovieButton);
                     removeMovieButton.addActionListener(e1 -> {  // Adding the selected movie to the watched list by id
                         Movie movieToDelete = moviesByID.searchMovieByID((Integer) id);
                         customer.getWatchedList().deleteMovie(movieToDelete);
@@ -453,6 +473,7 @@ public class ParkerFilmsGUI implements Serializable {
                         accessHaveWatched(customer);
                     });
 
+                    clearActionListener(addToWishlistButton);
                     addToWishlistButton.addActionListener(e2 -> {  // Adding the selected movie to the wishlist by id
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
                         if (customer.getWishlist().addMovie(movieToAdd)) {
@@ -560,20 +581,23 @@ public class ParkerFilmsGUI implements Serializable {
                     addToWatchedButton.setVisible(true);
 
                     Object id = table.getValueAt(table.getSelectedRow(), 2); // Getting the id of the selected row (ID of the movie)
+
+                    clearActionListener(addToWatchedButton);
                     addToWatchedButton.addActionListener(e1 -> {  // Adding the selected movie to the watched list by id
 
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
                         if (customer.getWatchedList().searchMovieByID(movieToAdd.getID()) == null) {
                             customer.getWatchedList().insertMovie(movieToAdd);
                             JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Have Watched.");
-                            saveData();
                         } else {
                             JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " is already in the have watched list");
                         }
                         table.clearSelection();
+                        saveData();
                         viewByReleaseDateCustomer(customer);
                     });
 
+                    clearActionListener(addToWishlistButton);
                     addToWishlistButton.addActionListener(e2 -> {  // Adding the selected movie to the wishlist by id
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
@@ -660,6 +684,7 @@ public class ParkerFilmsGUI implements Serializable {
         backButton.setFont(buttonFont);
         backButton.addActionListener(e -> accessHaveWatched(customer));
 
+        clearActionListener(searchButtonID);
         searchButtonID.addActionListener(e -> {
             // Search button that looks for a movie by id
             String movieId = movieIdField.getText();
@@ -677,6 +702,7 @@ public class ParkerFilmsGUI implements Serializable {
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(removeFromHaveWatched);
 
+                    clearActionListener(addWishlistButton);
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
                         if (customer.getWishlist().addMovie(foundMovie)) {
@@ -689,6 +715,7 @@ public class ParkerFilmsGUI implements Serializable {
                         searchInHaveWatched(customer);
                     });
 
+                    clearActionListener(removeFromHaveWatched);
                     removeFromHaveWatched.addActionListener(e1 -> {
                         // If the have watched button is clicked, add the movie and update the have watched
                         customer.getWatchedList().deleteMovie(foundMovie);
@@ -706,6 +733,7 @@ public class ParkerFilmsGUI implements Serializable {
             }
         });
 
+        clearActionListener(searchButtonDate);
         searchButtonDate.addActionListener(e -> {
             // Search button that looks for a movie by id
             String movieDate = movieDateField.getText();
@@ -724,6 +752,7 @@ public class ParkerFilmsGUI implements Serializable {
                     searchPanel.add(addWishlistButton);  // Also show the buttons as options
                     searchPanel.add(removeFromHaveWatched);
 
+                    clearActionListener(addWishlistButton);
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
                         if (customer.getWishlist().addMovie(foundMovie)) {
@@ -736,11 +765,12 @@ public class ParkerFilmsGUI implements Serializable {
                         searchInHaveWatched(customer);
                     });
 
+                    clearActionListener(removeFromHaveWatched);
                     removeFromHaveWatched.addActionListener(e1 -> {
-                        // If the have watched button is clicked, add the movie and update the have watched
-                        customer.getWatchedList().insertMovie(foundMovie);
+                        // If the remove from have watched button is clicked, remove the movie
+                        customer.getWatchedList().deleteMovie(foundMovie);
                         saveData();
-                        JOptionPane.showMessageDialog(panel, "Movie added to Watched List");
+                        JOptionPane.showMessageDialog(panel, "Movie removed from Watched List");
                     });
                 } else {
                     // If the movie is not found
@@ -819,6 +849,7 @@ public class ParkerFilmsGUI implements Serializable {
         loginPanel.add(submitButton);
         panel.add(loginPanel, BorderLayout.CENTER);
 
+        clearActionListener(submitButton);
         submitButton.addActionListener(e -> {
             // When submit button is clicked...
             // Getting the text in the fields
@@ -987,6 +1018,7 @@ public class ParkerFilmsGUI implements Serializable {
         buttonPanel.add(submit);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
+        clearActionListener(submit);
         submit.addActionListener(e -> {
             // If the submit button is clicked...
             String movieName = movieNameField.getText();  // Retrieve the data in the text fields
@@ -1089,6 +1121,7 @@ public class ParkerFilmsGUI implements Serializable {
             removeButton.setFont(buttonFont);
 
             // Action listener for goBackButton
+            clearActionListener(removeButton);
             removeButton.addActionListener(e -> {
                 // If the user choose to remove the least rated movie
 
@@ -1230,6 +1263,7 @@ public class ParkerFilmsGUI implements Serializable {
                     if (movieToModify.getAvailability()) {
                         setAsUnavaliableButton.setVisible(true);
                         setAsAvaliableButton.setVisible(false);
+                        clearActionListener(setAsUnavaliableButton);
                         setAsUnavaliableButton.addActionListener(e2 -> {
                             movieToModify.setAvailability(false);
                             saveData();
@@ -1240,6 +1274,7 @@ public class ParkerFilmsGUI implements Serializable {
                     } else {
                         setAsAvaliableButton.setVisible(true);
                         setAsUnavaliableButton.setVisible(false);
+                        clearActionListener(setAsAvaliableButton);
                         setAsAvaliableButton.addActionListener(e2 -> {
                             movieToModify.setAvailability(true);
                             saveData();
@@ -1329,6 +1364,7 @@ public class ParkerFilmsGUI implements Serializable {
         setAsUnavailableButton.setVisible(false);
         buttonPanel.add(setAsUnavailableButton);
 
+        clearActionListener(searchButtonID);
         searchButtonID.addActionListener(e -> {
             // Search button that looks for a movie by id
             String movieId = movieIdField.getText();
@@ -1348,6 +1384,7 @@ public class ParkerFilmsGUI implements Serializable {
                         setAsUnavailableButton.setVisible(true);
                     }
 
+                    clearActionListener(setAsUnavailableButton);
                     setAsUnavailableButton.addActionListener(e1 -> {
                         foundMovie.setAvailability(false);
                         movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
@@ -1365,6 +1402,7 @@ public class ParkerFilmsGUI implements Serializable {
             }
         });
 
+        clearActionListener(searchButtonDate);
         searchButtonDate.addActionListener(e -> {
             // Search button that looks for a movie by id
             String movieDate = movieDateField.getText();
@@ -1385,6 +1423,7 @@ public class ParkerFilmsGUI implements Serializable {
                         setAsUnavailableButton.setVisible(true);
                     }
 
+                    clearActionListener(setAsUnavailableButton);
                     setAsUnavailableButton.addActionListener(e1 -> {
                         foundMovie.setAvailability(false);
                         movieAvailabilityLabel.setText("Availability: " + getAvailabilityText(foundMovie.getAvailability()));
@@ -1560,6 +1599,8 @@ public class ParkerFilmsGUI implements Serializable {
         // Add login panel to the center of the main panel
         panel.add(loginPanel, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        clearActionListener(loginButton);
         loginButton.addActionListener(e -> {
             // When the login button is clicked...
             String username = usernameField.getText();  // Retrieve the text in the fields
@@ -1654,6 +1695,7 @@ public class ParkerFilmsGUI implements Serializable {
         loginPanel.add(submitButton);
         panel.add(loginPanel, BorderLayout.CENTER);
 
+        clearActionListener(submitButton);
         submitButton.addActionListener(e -> {
             // When submit button is clicked...
             // Getting the text in the fields
@@ -1765,6 +1807,14 @@ public class ParkerFilmsGUI implements Serializable {
             System.out.println(mbd.searchMovieByDate(leastRated.getReleaseDate()));
             System.out.println(leastRated.getTitle());
             System.out.println(mbi.searchMovieByID(leastRated.getID()));
+        }
+    }
+
+    private static void clearActionListener(JButton button) {
+        // Function checks if there are previous action listeners in the button and cleans them
+        ActionListener[] listeners = button.getActionListeners();
+        if (listeners.length > 0) {
+            button.removeActionListener(listeners[0]);
         }
     }
 
