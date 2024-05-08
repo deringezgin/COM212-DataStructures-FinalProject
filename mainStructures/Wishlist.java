@@ -35,9 +35,14 @@ public class Wishlist implements Serializable {
         filmCount -= 1;
     }
 
-    public void addMovie(Movie movie) {
+    public boolean addMovie(Movie movie) {
+        if (filmCount == size) {
+            // If the wishlist is full
+            return false;
+        }
         // Function to add a movie to the wishlist
         wishList[(firstMovieIndex + filmCount) % size] = movie;
         filmCount += 1;
+        return true;
     }
 }

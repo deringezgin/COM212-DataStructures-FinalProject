@@ -174,9 +174,13 @@ public class ParkerFilmsGUI implements Serializable {
 
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
-                        customer.getWishlist().addMovie(foundMovie);
+                        if (customer.getWishlist().addMovie(foundMovie)) {
+                            // If the wishlist is not full and successfully added the movie,
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, "Can't add " + foundMovie.getTitle() + " to the wishlist.\nWishlist is full!");
+                        }
                         saveData();
-                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
 
@@ -217,9 +221,13 @@ public class ParkerFilmsGUI implements Serializable {
 
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
-                        customer.getWishlist().addMovie(foundMovie);
+                        if (customer.getWishlist().addMovie(foundMovie)) {
+                            // If the wishlist is not full and successfully added the movie,
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, "Can't add " + foundMovie.getTitle() + " to the wishlist.\nWishlist is full!");
+                        }
                         saveData();
-                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Wish-List");
                         accessMoviesByIDorReleaseDateCustomer(customer);
                     });
 
@@ -440,8 +448,12 @@ public class ParkerFilmsGUI implements Serializable {
 
                     addToWishlistButton.addActionListener(e2 -> {  // Adding the selected movie to the wishlist by id
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
-                        customer.getWishlist().addMovie(movieToAdd);
-                        JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Wishlist.");
+                        if (customer.getWishlist().addMovie(movieToAdd)) {
+                            // If the wishlist is not full and successfully added the movie,
+                            JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to wishlist");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, "Can't add " + movieToAdd.getTitle() + " to the wishlist.\nWishlist is full!");
+                        }
                         saveData();
                         table.clearSelection();
                         accessHaveWatched(customer);
@@ -557,8 +569,13 @@ public class ParkerFilmsGUI implements Serializable {
 
                     addToWishlistButton.addActionListener(e2 -> {  // Adding the selected movie to the wishlist by id
                         Movie movieToAdd = moviesByID.searchMovieByID((Integer) id);
-                        customer.getWishlist().addMovie(movieToAdd);
-                        JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to the Wishlist.");
+                        // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
+                        if (customer.getWishlist().addMovie(movieToAdd)) {
+                            // If the wishlist is not full and successfully added the movie,
+                            JOptionPane.showMessageDialog(panel, movieToAdd.getTitle() + " added to wishlist");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, "Can't add " + movieToAdd.getTitle() + " to the wishlist.\nWishlist is full!");
+                        }
                         saveData();
                         table.clearSelection();
                         viewByReleaseDateCustomer(customer);
@@ -655,10 +672,14 @@ public class ParkerFilmsGUI implements Serializable {
 
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
-                        customer.getWishlist().addMovie(foundMovie);
+                        if (customer.getWishlist().addMovie(foundMovie)) {
+                            // If the wishlist is not full and successfully added the movie,
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, "Can't add " + foundMovie.getTitle() + " to the wishlist.\nWishlist is full!");
+                        }
                         saveData();
-                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
-                        accessMoviesByIDorReleaseDateCustomer(customer);
+                        searchInHaveWatched(customer);
                     });
 
                     removeFromHaveWatched.addActionListener(e1 -> {
@@ -698,10 +719,14 @@ public class ParkerFilmsGUI implements Serializable {
 
                     addWishlistButton.addActionListener(e12 -> {
                         // If the add wishlist button is clicked, add movie to the wishlist and update the wishlist
-                        customer.getWishlist().addMovie(foundMovie);
+                        if (customer.getWishlist().addMovie(foundMovie)) {
+                            // If the wishlist is not full and successfully added the movie,
+                            JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to wishlist");
+                        } else {
+                            JOptionPane.showMessageDialog(panel, "Can't add " + foundMovie.getTitle() + " to the wishlist.\nWishlist is full!");
+                        }
                         saveData();
-                        JOptionPane.showMessageDialog(panel, foundMovie.getTitle() + " added to Wish-List");
-                        accessMoviesByIDorReleaseDateCustomer(customer);
+                        searchInHaveWatched(customer);
                     });
 
                     removeFromHaveWatched.addActionListener(e1 -> {
