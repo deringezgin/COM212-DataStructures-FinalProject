@@ -3,7 +3,7 @@ package mainStructures;
 import java.io.Serializable;
 
 // COM212 Data Structures | Spring 2024 | Final Project
-// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Derin Gezgin | Dimitris Seremetis | Johnny Andreasen | Nick Essery
 // Movie class that creates a Movie Node.
 // A movie Node has the usual variables: title, release date, ID, score and availability
 // It has a next pointer for the implementation of the Have Watched list of the users. (It's a linked list)

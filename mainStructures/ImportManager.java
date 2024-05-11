@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Scanner;
 
 // COM212 Data Structures | Spring 2024 | Final Project
-// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Derin Gezgin | Dimitris Seremetis | Johnny Andreasen | Nick Essery
 // Import manager to read the .csv seed files
 
 public class ImportManager implements Serializable {

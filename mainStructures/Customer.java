@@ -3,7 +3,7 @@ package mainStructures;
 import java.io.Serializable;
 
 // COM212 Data Structures | Spring 2024 | Final Project
-// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Derin Gezgin | Dimitris Seremetis | Johnny Andreasen | Nick Essery
 // Customer Node for creating individual customers
 // It stores the simple customer info: name, credit card number, email
 // It has a wishlist and a have-watched list

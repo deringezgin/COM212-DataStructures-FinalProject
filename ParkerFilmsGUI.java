@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 // COM212 Data Structures | Spring 2024 | Final Project
-// Derin Gezgin | Dimitrios Seremetis | Johnny Andreasen | Nick Essery
+// Derin Gezgin | Dimitris Seremetis | Johnny Andreasen | Nick Essery
 // Main Program to run the GUI. It has different functions for the different windows of the program.
 // Run the main function to start
 
