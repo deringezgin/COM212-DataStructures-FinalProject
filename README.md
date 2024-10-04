@@ -1,3 +1,4 @@
+Contributors: Derin Gezgin, Johnny Andreasen , Dimitris Seremetis, Nick Essery
 Name of the class that contains the main function: ParkerFilmsGUI
 Data file contains the single serialization file that stores the objects of our program.
 Docs file contains our starting plan (scheme1.jpg) and the project prompt.
