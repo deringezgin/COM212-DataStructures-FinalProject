@@ -76,59 +76,59 @@ A new logged-in user has four options: \
 ### A. Proceeding as a Customer
 A login page appears if the user decides to proceed as a customer. The user should write the last four digits of their credit card number and password to
 log in to the system. When the user is logged in, they have six options:
-1. Access Movies By ID or Release Date: This window allows users to search for a movie by
+1. _Access Movies By ID or Release Date:_ This window allows users to search for a movie by
 their 5-digit movie ID or their exact release date. After this, they are presented with all the
 available information for the movie and asked if they would like to add the movie to their
 wishlist or their have-watched list.
-2. Access Wishlist: This will open a window with the user’s wishlist. It will start empty, and
+2. _Access Wishlist:_ This will open a window with the user’s wishlist. It will start empty, and
 users can add movies to it. The first movie they add to the wishlist will be the first to appear,
 and the rest will show in order of addition as the user removes a movie from the wishlist. If
 there are no movies on the wishlist, the user will receive a message on the screen that
 states the wishlist is empty.
-3. Access the Watched Movies List: This function is similar to the wishlist, but instead of
+3. _Access the Watched Movies List:_ This function is similar to the wishlist, but instead of
 showing the first movie added to the list, it shows the entire list of movies the user has
 watched. If the user selects a movie from the list, they can remove it from the list or add it
 to the wishlist to watch it again. This window also has a button that forwards the user to
 another screen in which the user can search for the movies in the watched movies list by ID
 or release date. Similarly to the previous screen, if the user does a successful search, they
 can remove the movie from the watched list or add it to the wishlist.
-4. View the Movies In Order of Release Date: This screen lists all of the movies in the
+4. _View the Movies In Order of Release Date:_ This screen lists all of the movies in the
 system by release date. If the user selects a movie, they can add it to the wishlist or the
 watched movies list.
-5. Edit Customer Information: This allows the customer to change their Name, Surname,
+5. _Edit Customer Information:_ This allows the customer to change their Name, Surname,
 email address, and password. However, the customer cannot change their credit card
 number, as it’s the user name used to enter the system. If the customer wants to change
 their credit card number, they must contact the admin.
-6. Logout to the Main Menu: This option logs out the customer to the customer login menu.
+6. _Logout to the Main Menu:_ This option logs out the customer to the customer login menu.
 
 ### B. Proceeding as an Admin
 A specific admin login page appears if the user decides to proceed as
 an admin. The admin password and username are “admin.” When the admin login is successful,
 the admin has six options.
-1. Add a new movie: The admin can add a new movie to the system on this screen. For a
+1. _Add a new movie:_ The admin can add a new movie to the system on this screen. For a
 successful movie creation, a movie name, a release date in YYYYMMDD format, a rating
 from 0 to 100, and availability 0/1 (0 for not available and 1 for available) should be
 entered. The program checks for this requirement, so it won’t create the movie if it is a
 false input. The program will assign the ID in the background so that the admin doesn’t
 have to be bothered with it.
-2. View the Least-Rated Movie: This screen shows the admin the system’s least-rated
+2. _View the Least-Rated Movie:_ This screen shows the admin the system’s least-rated
 movie. The admin can also choose to remove the movie completely. If the admin decides
 to remove the movie, its availability in the background will be set to false.
-3. View movies in order of release date: This menu is very similar to the customers’ (4th
+3. _View movies in order of release date:_ This menu is very similar to the customers’ (4th
 menu option). In this case, if an admin selects a movie from the list, it can set its
 availability to false.
-4. Access Movies by ID or Release Date: On this screen, the admin can search for a
+4. _Access Movies by ID or Release Date:_ On this screen, the admin can search for a
 movie throughout the system by ID or Release Date. In the background, the program
 checks if the admin entered a valid ID or a release date. If the input is valid, the program
 searches for the movie and shows if it exists. After the movie is displayed, the admin has
 the option to set the movie as unavailable.
-5. Return to the initial seed of the program: When you select this option, all changes
+5. _Return to the initial seed of the program:_ When you select this option, all changes
 that have been made will be reset. The “initial seed” is the original information that shows
 when you first run the program. This means all original movies, users, and information will
 stay, but any changed information like new users, user’s wish lists or watched lists, and
 new movies will be removed. If the admin clicks on this option, the admin has to confirm
 that they’re sure to reset the program.
-6. Logout to the main menu: This option returns the admin to the admin login menu.
+6. _Logout to the main menu:_ This option returns the admin to the admin login menu.
 
 ### C. Creating a New Customer
 If the user decides to create a new customer account, it’ll be
@@ -137,7 +137,7 @@ address (that contains @, ends with a valid domain (.com, .org, .edu, etc.), and
 least one character long username and mail server name), credit card number (in this stage
 last four digits), and a password. When the user presses submit, the program will check the
 inputs and, if successful, create a new customer. The user will be forwarded to the customer
-login. \
+login.
 
 ### D. Quitting the Program
 This option will simply end the program completely.
