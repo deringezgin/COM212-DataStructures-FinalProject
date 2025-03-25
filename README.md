@@ -1,4 +1,4 @@
-# COM212 Spring 2024 Final Project: Parker Films
+# COM212 | Spring 2024 | Final Project: Parker Films
 ## Derin Gezgin - Johnny Andreasen - Dimitris Seremetis - Nick Essery
 
 
